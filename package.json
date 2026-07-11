@@ -1,19 +1,19 @@
 {
-  "name": "homebridge-plugin-name",
-  "displayName": "Plugin Name",
+  "name": "homebridge-airthings-wave2",
+  "displayName": "Airthings-Wave",
   "type": "module",
   "version": "1.0.0",
   "private": true,
   "description": "A short description about what your plugin does.",
-  "author": "Your Name",
+  "author": "HSkul",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/USERNAME/GITHUB_PROJECT_NAME#readme",
+  "homepage": "https://github.com/HSkul/homebridge-airthings-wave2#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/USERNAME/GITHUB_PROJECT_NAME.git"
+    "url": "https://github.com/HSkul/homebridge-airthings-wave2.git"
   },
   "bugs": {
-    "url": "https://github.com/USERNAME/GITHUB_PROJECT_NAME/issues"
+    "url": "https://github.com/HSkul/homebridge-airthings-wave2/issues"
   },
   "keywords": [
     "homebridge-plugin"
