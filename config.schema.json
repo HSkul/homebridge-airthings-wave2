@@ -1,5 +1,5 @@
 {
-  "pluginAlias": "ExampleHomebridgePlugin",
+  "pluginAlias": "AirThingsWavePlugin",
   "pluginType": "platform",
   "singular": true,
   "strictValidation": false,
