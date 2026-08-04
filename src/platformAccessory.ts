@@ -1,11 +1,11 @@
-import { Characteristic, type CharacteristicValue, type PlatformAccessory, type Service } from 'homebridge';
-
+import { type PlatformAccessory, type Service } from 'homebridge';
+// import { Characteristic, type CharacteristicValue, type PlatformAccessory, type Service } from 'homebridge';
 import type { AirthingsWavePlatform } from './platform.js';
 //import { CustomCharacteristic } from './customCharacteristics.js';
 
-import packageJson from '../package.json' with { type: "json" };
-import {WavePlusSensor} from './sensorWavePlus.ts';
-import {WaveSensor} from './sensorWave.ts';
+import packageJson from '../package.json' with { type: 'json' };
+import { WavePlusSensor } from './sensorWavePlus.ts';
+import { WaveSensor } from './sensorWave.ts';
 //import { createBluetooth } from 'node-ble';
 //const {bluetooth, destroy} = createBluetooth();
 //const adapter = await bluetooth.defaultAdapter();
@@ -29,7 +29,7 @@ export class AirthingsWaveAccessory {
   private isWavePlus: boolean;
   private name_temperature: string;
   private name_humidity: string;
-  private name_CO2: string = "";
+  private name_CO2: string = '';
   //private name_airpressure: string;
   private refresh: number;
   private address: string;
@@ -61,7 +61,7 @@ export class AirthingsWaveAccessory {
     this.isWavePlus = accessory.context.device.waveplus || false;
     this.name_temperature = accessory.context.device.name_temperature || this.name;
     this.name_humidity = accessory.context.device.name_humidity || this.name;
-    this.refresh = accessory.context.device['refresh'] || 3600; // Update every hour
+    this.refresh = accessory.context.device.refresh || 3600; // Update every hour
     this.address = accessory.context.device.address;
     this.devicePolling.bind(this);
 
@@ -131,7 +131,7 @@ export class AirthingsWaveAccessory {
         .setProps({
           minValue: 0,
           maxValue: 5000,
-          minStep: 1
+          minStep: 1,
         });
       this.carbonDioxideService.addCharacteristic(this.platform.customCharacteristic.characteristic.VOC_Level);
       this.carbonDioxideService.addCharacteristic(this.platform.customCharacteristic.characteristic.Pressure);
@@ -178,13 +178,13 @@ export class AirthingsWaveAccessory {
   }
 
   async devicePolling() {
-    var strvalues
-    var valuest
-    let wavePlus: WavePlusSensor;
-    let wave: WaveSensor;
-    let thisWave: any;
-    wavePlus = new WavePlusSensor(this.address);
-    wave = new WaveSensor(this.address);
+    //var strvalues
+    //var valuest
+    const wavePlus = new WavePlusSensor(this.address);
+    const wave = new WaveSensor(this.address);
+    let thisWave;
+    //wavePlus = new WavePlusSensor(this.address);
+    //wave = new WaveSensor(this.address);
     /*
     if (this.waveplus) {
       let sensor: WavePlusSensor;
@@ -236,7 +236,7 @@ export class AirthingsWaveAccessory {
       this.carbonDioxideService
         .setCharacteristic(this.platform.customCharacteristic.characteristic.Pressure, thisWave.getvalue(airthings_pressure));
       
-      }
+    }
     thisWave.disconnect();
     // Basic procedure is:
     // - Connect to the device
@@ -312,12 +312,14 @@ export class AirthingsWaveAccessory {
      }); */
   }
   getServices() {
-    if(this.isWavePlus)
+    if(this.isWavePlus) {
       //return [this.informationService, this.temperatureService, this.humidityService, this.carbonDioxideService, this.airPressureService]
       return [this.temperatureService, this.humidityService, this.carbonDioxideService]
-    else
+    }
+    else {
       //return [this.informationService, this.temperatureService, this.humidityService]
       return [this.temperatureService, this.humidityService]
+    }
   }
   /**
    * Handle "SET" requests from HomeKit
@@ -372,7 +374,8 @@ export class AirthingsWaveAccessory {
   }
   */
 }
-
+/*
 function roundInt(string: any) {
   return Math.round(parseFloat(string) * 10) / 10;
 }
+*/
