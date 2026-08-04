@@ -314,8 +314,8 @@ export class AirthingsWaveAccessory {
   getServices() {
     if(this.isWavePlus) {
       //return [this.informationService, this.temperatureService, this.humidityService, this.carbonDioxideService, this.airPressureService]
-      return [this.temperatureService, this.humidityService, this.carbonDioxideService]; }
-    else {
+      return [this.temperatureService, this.humidityService, this.carbonDioxideService];
+    } else {
       //return [this.informationService, this.temperatureService, this.humidityService]
       return [this.temperatureService, this.humidityService];
     }
