@@ -108,8 +108,8 @@ export class WavePlusSensor {
   }
 
   async disconnect() {
-    await this.device.disconnect()
-    destroy()
+    await this.device.disconnect();
+    destroy();
   }
 
   getvalue(sensor_index: number): number {
