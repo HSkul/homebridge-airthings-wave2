@@ -9,8 +9,8 @@ const SENSOR_IDX_CO2_LVL = 5;
 const SENSOR_IDX_VOC_LVL = 6;
 
 // Create bluetooth adapter instance
-import { createBluetooth } from 'node-ble';
-const {bluetooth, destroy} = createBluetooth();
+import { createBluetooth, Adapter, Device, GattServer } from 'node-ble';
+const { bluetooth, destroy } = createBluetooth();
 
 
 
@@ -21,9 +21,9 @@ export class WavePlusSensor {
   private sensor_version: number;
   private sensor_data: number[];
   private sensor_units: string[];
-  private adapter: any;
-  private device: any;
-  private gattServer: any;
+  private adapter: Adapter;
+  private device: Device;
+  private gattServer: GattServer;
 
   // we need the following declarations:
   // bluetooth adapter instance
@@ -31,26 +31,25 @@ export class WavePlusSensor {
   // bluetooth characteristic instance
   // bluetooth service instance
 
-  constructor(private readonly btaddress: string)
-  {
+  constructor(private readonly btaddress: string) {
     // we would have to set the number of sensors here depending on the type of wave
     this.macaddr = btaddress.toLowerCase();
     this.uuid = 'b42e2a68-ade7-11e4-89d3-123b93f75cba';
     this.sensor_data = new Array(NUMBER_OF_SENSORS).fill(null);
-    this.sensor_units = ["%rH", "Bq/m3", "Bq/m3", "degC", "hPa", "ppm", "ppb"];
+    this.sensor_units = ['%rH', 'Bq/m3', 'Bq/m3', 'degC', 'hPa', 'ppm', 'ppb'];
     this.sensor_version = -1;
     
   }
 
 
   // We have two types of connect(), and read() functions, for each type of wave
-  async connect()
-  {
+  async connect() {
     // Create bluetooth adapter instance
     this.adapter = await bluetooth.defaultAdapter();
     // Start discovery of bluetooth devices
-    if (! await this.adapter.isDiscovering())
+    if (! await this.adapter.isDiscovering()) {
       await this.adapter.startDiscovery();
+    }
     // Wait for the device to be discovered
     this.device = await this.adapter.waitDevice(this.macaddr);
     await this.device.connect();
@@ -59,8 +58,7 @@ export class WavePlusSensor {
 
   }
 
-  async read()
-  {
+  async read() {
     // 
     const service = await this.gattServer.getPrimaryService(this.uuid);
     // Can we skip the uuid and get all the data like the Python script?
@@ -72,7 +70,7 @@ export class WavePlusSensor {
     console.log(rawdata);
     console.log(rawdata.length);
     if (rawdata.length < 12) {
-      console.error("ERROR: Received data length is too short.");
+      console.error('ERROR: Received data length is too short.');
       //process.exit(1);
     }
     // Unpack data according to '<BBBBHHHHHHHH'
@@ -91,7 +89,7 @@ export class WavePlusSensor {
       rawdata.readUInt16LE(12),
       rawdata.readUInt16LE(14),
       rawdata.readUInt16LE(16),
-      rawdata.readUInt16LE(18)
+      rawdata.readUInt16LE(18),
     ];
     this.sensor_version = rawValues[0];
     if (this.sensor_version === 1) {
@@ -103,25 +101,22 @@ export class WavePlusSensor {
       this.sensor_data[SENSOR_IDX_CO2_LVL] = rawValues[8] * 1.0;
       this.sensor_data[SENSOR_IDX_VOC_LVL] = rawValues[9] * 1.0;
     } else {
-            console.error("ERROR: Incompatible sensor version.\n");
-            //process.exit(1);
+      console.error('ERROR: Incompatible sensor version.\n');
+      //process.exit(1);
     }
     
   }
 
-  async disconnect()
-  {
+  async disconnect() {
     await this.device.disconnect()
     destroy()
   }
 
-  getvalue(sensor_index: number): number
-  {
+  getvalue(sensor_index: number): number {
     return this.sensor_data[sensor_index];
   }
 
-  getunit(sensor_index: number): string
-  {
+  getunit(sensor_index: number): string {
     return this.sensor_units[sensor_index];
   }
 
@@ -131,5 +126,5 @@ export class WavePlusSensor {
       radon = radon_raw;
     }
     return radon;
-    }
+  }
 }
