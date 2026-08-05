@@ -31,9 +31,9 @@ export class AirthingsWavePlatform implements DynamicPlatformPlugin {
   public customCharacteristic: CustomCharacteristic;
   // This is only required when using Custom Services and Characteristics not support by HomeKit
   /* eslint-disable-next-line  @typescript-eslint/no-explicit-any */
-  public readonly CustomServices: any;
+  //public readonly CustomServices: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public readonly CustomCharacteristics: any;
+  //public readonly CustomCharacteristics: any;
 
   constructor(
     public readonly log: Logging,
