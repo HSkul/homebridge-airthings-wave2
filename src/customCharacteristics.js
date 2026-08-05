@@ -2,7 +2,7 @@
 // Custom Characteristics for use with Airthing Wave/Wave+ radon detector
 ////////////////////////////////////////////////////////////////////////////////////////
 
-import {API, Characteristic, CharacteristicProps, Formats, Units, Perms, WithUUID} from 'homebridge';
+import { API, Characteristic, CharacteristicProps, Formats, Perms, WithUUID } from 'homebridge';
 
 export class CustomCharacteristic {
 
@@ -17,7 +17,7 @@ export class CustomCharacteristic {
       perms: [Perms.PAIRED_READ, Perms.NOTIFY],
       minValue: 0,
       maxValue: 1000,
-      minStep: 1
+      minStep: 1,
     }, 'Radon Long Term Average');
 
     this.createCharacteristics('RadonShortTermAverage', 'B42E01AA-ADE7-11E4-89D3-123B93F75CBA', {
@@ -25,7 +25,7 @@ export class CustomCharacteristic {
       perms: [Perms.PAIRED_READ, Perms.NOTIFY],
       minValue: 0,
       maxValue: 1000,
-      minStep: 1
+      minStep: 1,
     }, 'Radon Short Term Average');
 
     this.createCharacteristics('VOC_Level', 'B42E41C4-ADE7-11E4-89D3-123B93F75CBA', {
@@ -33,7 +33,7 @@ export class CustomCharacteristic {
       perms: [Perms.PAIRED_READ, Perms.NOTIFY],
       minValue: 0,
       maxValue: 5000,
-      minStep: 1
+      minStep: 1,
     }, 'VOC Level');
 
     this.createCharacteristics('Pressure', '873AE82A-4C5A-4342-B539-9D900BF7EBD0', {
@@ -41,7 +41,7 @@ export class CustomCharacteristic {
       perms: [Perms.PAIRED_READ, Perms.NOTIFY],
       minValue: 0,
       maxValue: 1200,
-      minStep: 1
+      minStep: 1,
     }, 'Pressure');
   }
 
@@ -52,7 +52,7 @@ export class CustomCharacteristic {
         super(displayName, uuid, props);
         this.value = this.getDefaultValue();
       }
-    }
+    };
   }
 }
 
