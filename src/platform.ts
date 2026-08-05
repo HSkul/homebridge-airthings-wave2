@@ -30,9 +30,9 @@ export class AirthingsWavePlatform implements DynamicPlatformPlugin {
   public readonly discoveredCacheUUIDs: string[] = [];
   public customCharacteristic: CustomCharacteristic;
   // This is only required when using Custom Services and Characteristics not support by HomeKit
-  /* eslint-disable-next-line  @typescript-eslint/no-explicit-any */
+  /* eXXslint-disable-next-line  @typescript-eslint/no-explicit-any */
   //public readonly CustomServices: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eXXslint-disable-next-line @typescript-eslint/no-explicit-any
   //public readonly CustomCharacteristics: any;
 
   constructor(
