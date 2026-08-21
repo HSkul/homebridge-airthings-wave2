@@ -85,8 +85,7 @@ export class AirthingsWaveSensor {
       await device.disconnect();
       destroy();
       return;
-    }
-    else if (!this.isWavePlus && deviceName !== 'AT#129408-2900Radon') {
+    } else if (!this.isWavePlus && deviceName !== 'AT#129408-2900Radon') {
       this.log.error('ERROR: ',btaddress, 'is not a Wave device. Found device name: ', deviceName);
       await device.disconnect();
       destroy();
