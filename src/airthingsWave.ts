@@ -1,6 +1,7 @@
 // Create bluetooth adapter instance
 import { Logging } from 'homebridge';
-import { createBluetooth, Adapter, Device, GattServer } from 'node-ble';
+//import { createBluetooth, Adapter, Device, GattServer } from 'node-ble';
+import { createBluetooth } from 'node-ble';
 import { AirthingsWavePlatform } from './platform.ts';
 //import { waveSensor } from './types.ts';
 
@@ -40,7 +41,7 @@ export class AirthingsWaveSensor {
   constructor(
     private readonly platform: AirthingsWavePlatform,
     private readonly btaddress: string, 
-    private readonly plus: boolean
+    private readonly plus: boolean,
   ) {
     this.macaddr = btaddress.toLowerCase();
     this.isWavePlus = plus;
@@ -203,11 +204,3 @@ export class AirthingsWaveSensor {
     return radon;
   }
 }
-
-
- 
-
-
-
-
-
