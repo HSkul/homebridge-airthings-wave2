@@ -4,19 +4,20 @@ import type { AirthingsWavePlatform } from './platform.js';
 //import { CustomCharacteristic } from './customCharacteristics.js';
 
 import packageJson from '../package.json' with { type: 'json' };
-import { WavePlusSensor } from './sensorWavePlus.ts';
-import { WaveSensor } from './sensorWave.ts';
+import { AirthingsWaveSensor, waveSensor } from './airthingsWave.ts';
+//import { waveSensor } from './types.ts';
+//import { WaveSensor } from './sensorWave.ts';
 //import { createBluetooth } from 'node-ble';
 //const {bluetooth, destroy} = createBluetooth();
 //const adapter = await bluetooth.defaultAdapter();
 
-const airthings_humidity = 0;
-const airthings_temperature = 1;
-const airthings_radon_st = 2;
-const airthings_radon_lt = 3;
-const airthings_pressure = 4;
-const airthings_CO2 = 5;
-const airthings_VOC = 6;
+//const airthings_humidity = 0;
+//const airthings_temperature = 1;
+//const airthings_radon_st = 2;
+//const airthings_radon_lt = 3;
+//const airthings_pressure = 4;
+//const airthings_CO2 = 5;
+//const airthings_VOC = 6;
 
 /**
  * Platform Accessory
@@ -29,13 +30,13 @@ export class AirthingsWaveAccessory {
   private isWavePlus: boolean;
   private name_temperature: string;
   private name_humidity: string;
-  private name_CO2: string = '';
+  private name_CO2?: string = '';
   //private name_airpressure: string;
   private refresh: number;
   private address: string;
   private temperatureService: Service;
   private humidityService: Service;
-  private carbonDioxideService: Service;
+  private carbonDioxideService?: Service;
   //private airPressureService: Service;
   //private informationService: Service;
 
@@ -68,7 +69,7 @@ export class AirthingsWaveAccessory {
     // set accessory information
     this.accessory.getService(this.platform.Service.AccessoryInformation)!
       .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Airthings')
-      .setCharacteristic(this.platform.Characteristic.Model, 'Wave/Wave+')
+      .setCharacteristic(this.platform.Characteristic.Model, this.isWavePlus ? "Wave+" : "Wave")
       .setCharacteristic(this.platform.Characteristic.SerialNumber, this.address)
       .setCharacteristic(this.platform.Characteristic.FirmwareRevision, packageJson.version);
 
@@ -120,12 +121,16 @@ export class AirthingsWaveAccessory {
     this.temperatureService.addCharacteristic(this.platform.customCharacteristic.characteristic.RadonShortTermAverage);
     this.temperatureService.addCharacteristic(this.platform.customCharacteristic.characteristic.RadonLongTermAverage);
 
-    this.name_CO2 = accessory.context.device.name_CO2 || this.name;
-    this.carbonDioxideService = this.accessory.getService(this.name_CO2)
-      || this.accessory.addService(this.platform.Service.CarbonDioxideSensor, this.name_CO2);
+    
+    //this.carbonDioxideService = this.accessory.getService(this.name_CO2);
+    
+   
+    //
     // If we have Wave+ then we have additional services/characteristics
     if(this.isWavePlus) {
-      
+      this.name_CO2 = accessory.context.device.name_CO2 || this.name;
+      this.carbonDioxideService = this.accessory.getService(this.name_CO2 || this.name)
+      || this.accessory.addService(this.platform.Service.CarbonDioxideSensor, this.name_CO2);
       this.carbonDioxideService
         .getCharacteristic(this.platform.Characteristic.CarbonDioxideLevel)
         .setProps({
@@ -180,9 +185,9 @@ export class AirthingsWaveAccessory {
   async devicePolling() {
     //var strvalues
     //var valuest
-    const wavePlus = new WavePlusSensor(this.address);
-    const wave = new WaveSensor(this.address);
-    let thisWave;
+    //const wavePlus = new WavePlusSensor(this.address);
+    const airthingswave = new AirthingsWaveSensor(this.platform, this.address, this.isWavePlus);
+    //let thisWave;
     //wavePlus = new WavePlusSensor(this.address);
     //wave = new WaveSensor(this.address);
     /*
@@ -195,49 +200,49 @@ export class AirthingsWaveAccessory {
       //sensor = new WaveSensor(this.address);
     } */
 
-    if (this.isWavePlus) {
-      thisWave = wavePlus;
-    } else {
-      thisWave = wave;
-    }
+    //if (this.isWavePlus) {
+    //  thisWave = wavePlus;
+    //} else {
+    //  thisWave = wave;
+    //}
     this.platform.log.debug('Polling device: ', this.name, ' at address: ', this.address);
     this.platform.log.debug('Wave+ device: ', this.isWavePlus);
     this.platform.log.debug('Refresh interval: ', this.refresh, ' seconds');
 
-    thisWave.connect();
-    thisWave.read();
+    //airthingswave.connect();
+    airthingswave.readWave();
     
-    this.platform.log('Humidity: ', thisWave.getvalue(airthings_humidity));
-    this.platform.log('Temperature: ', thisWave.getvalue(airthings_temperature));
-    this.platform.log('Radon short term: ', thisWave.getvalue(airthings_radon_st));
-    this.platform.log('Radon long term: ', thisWave.getvalue(airthings_radon_lt));
-    
+    this.platform.log('Humidity: ', airthingswave.getvalue(waveSensor.humidity), airthingswave.getunit(waveSensor.humidity));
+    this.platform.log('Temperature: ', airthingswave.getvalue(waveSensor.temperature), airthingswave.getunit(waveSensor.temperature));
+    this.platform.log('Radon short term: ', airthingswave.getvalue(waveSensor.radonShortTermAverage), airthingswave.getunit(waveSensor.radonShortTermAverage));
+    this.platform.log('Radon long term: ', airthingswave.getvalue(waveSensor.radonLongTermAverage), airthingswave.getunit(waveSensor.radonLongTermAverage));
+
     this.humidityService
-      .setCharacteristic(this.platform.Characteristic.CurrentRelativeHumidity, thisWave.getvalue(airthings_humidity));
+      .setCharacteristic(this.platform.Characteristic.CurrentRelativeHumidity, airthingswave.getvalue(waveSensor.humidity));
     this.temperatureService
-      .setCharacteristic(this.platform.Characteristic.CurrentTemperature, thisWave.getvalue(airthings_temperature));
+      .setCharacteristic(this.platform.Characteristic.CurrentTemperature, airthingswave.getvalue(waveSensor.temperature));
     this.temperatureService
-      .setCharacteristic(this.platform.customCharacteristic.characteristic.RadonShortTermAverage, thisWave.getvalue(airthings_radon_st));
+      .setCharacteristic(this.platform.customCharacteristic.characteristic.RadonShortTermAverage, airthingswave.getvalue(waveSensor.radonShortTermAverage));
     this.temperatureService
-      .setCharacteristic(this.platform.customCharacteristic.characteristic.RadonLongTermAverage, thisWave.getvalue(airthings_radon_lt));
+      .setCharacteristic(this.platform.customCharacteristic.characteristic.RadonLongTermAverage, airthingswave.getvalue(waveSensor.radonLongTermAverage));
     
 
     if (this.isWavePlus) {
-      this.platform.log('Pressure: ', thisWave.getvalue(airthings_pressure));
-      this.platform.log('Carbon dioxide: ', thisWave.getvalue(airthings_CO2));
-      this.platform.log('Organics: ', thisWave.getvalue(airthings_VOC));
-      
+      this.platform.log('Pressure: ', airthingswave.getvalue(waveSensor.pressure), airthingswave.getunit(waveSensor.pressure));
+      this.platform.log('Carbon dioxide: ', airthingswave.getvalue(waveSensor.co2Level), airthingswave.getunit(waveSensor.co2Level));
+      this.platform.log('Organics: ', airthingswave.getvalue(waveSensor.vocLevel), airthingswave.getunit(waveSensor.vocLevel));
+
       //this.airPressureService
-      //  .setCharacteristic(this.platform.Characteristic.CurrentAirPressure, thisWave.getvalue(airthings_pressure));
-      this.carbonDioxideService
-        .setCharacteristic(this.platform.Characteristic.CarbonDioxideLevel, thisWave.getvalue(airthings_CO2));
-      this.carbonDioxideService
-        .setCharacteristic(this.platform.customCharacteristic.characteristic.VOC_Level, thisWave.getvalue(airthings_VOC));
-      this.carbonDioxideService
-        .setCharacteristic(this.platform.customCharacteristic.characteristic.Pressure, thisWave.getvalue(airthings_pressure));
+      //  .setCharacteristic(this.platform.Characteristic.CurrentAirPressure, airthingswave.getvalue(airthings_pressure));
+      this.carbonDioxideService?.setCharacteristic(
+        this.platform.Characteristic.CarbonDioxideLevel, airthingswave.getvalue(waveSensor.co2Level));
+      this.carbonDioxideService?.setCharacteristic(
+        this.platform.customCharacteristic.characteristic.VOC_Level, airthingswave.getvalue(waveSensor.vocLevel));
+      this.carbonDioxideService?.setCharacteristic(
+        this.platform.customCharacteristic.characteristic.Pressure, airthingswave.getvalue(waveSensor.pressure));
       
     }
-    thisWave.disconnect();
+    //airthingswave.disconnect();
     // Basic procedure is:
     // - Connect to the device
     // - Read in the values from the device
@@ -314,10 +319,11 @@ export class AirthingsWaveAccessory {
   getServices() {
     if(this.isWavePlus) {
       //return [this.informationService, this.temperatureService, this.humidityService, this.carbonDioxideService, this.airPressureService]
-      return [this.temperatureService, this.humidityService, this.carbonDioxideService];
-    } else {
+      return [this.temperatureService, this.humidityService, this.carbonDioxideService]
+    }
+    else {
       //return [this.informationService, this.temperatureService, this.humidityService]
-      return [this.temperatureService, this.humidityService];
+      return [this.temperatureService, this.humidityService]
     }
   }
   /**
