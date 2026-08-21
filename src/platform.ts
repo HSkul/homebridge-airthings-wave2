@@ -20,7 +20,6 @@ import { CustomCharacteristic } from './customCharacteristics.js';
  * parse the user config and discover/register accessories with Homebridge.
  */
 
-// Let's change this from Dynamic to StaticPlatformPlugin as we don't need it
 export class AirthingsWavePlatform implements DynamicPlatformPlugin {
   public readonly Service: typeof Service;
   public readonly Characteristic: typeof Characteristic;
@@ -30,10 +29,10 @@ export class AirthingsWavePlatform implements DynamicPlatformPlugin {
   public readonly discoveredCacheUUIDs: string[] = [];
   public customCharacteristic: CustomCharacteristic;
   // This is only required when using Custom Services and Characteristics not support by HomeKit
-  /* eXXslint-disable-next-line  @typescript-eslint/no-explicit-any */
-  //public readonly CustomServices: any;
-  // eXXslint-disable-next-line @typescript-eslint/no-explicit-any
-  //public readonly CustomCharacteristics: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   //public readonly CustomServices: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public readonly CustomCharacteristics: any;
 
   constructor(
     public readonly log: Logging,
@@ -66,12 +65,17 @@ export class AirthingsWavePlatform implements DynamicPlatformPlugin {
   /**
    * This function is invoked when homebridge restores cached accessories from disk at startup.
    * It should be used to set up event handlers for characteristics and update respective values.
+   * --> it should take AirthingsWaveAccessory? as a parameter, and call the devicePolling() method 
+   * on it to read the values from the device
    */
   configureAccessory(accessory: PlatformAccessory) {
     this.log.info('Loading accessory from cache:', accessory.displayName);
 
     // add the restored accessory to the accessories cache, so we can track if it has already been registered
     this.accessories.set(accessory.UUID, accessory);
+
+    // Is this how we update the values from the device by running the constructor?
+    new AirthingsWaveAccessory(this, accessory);
   }
 
   /**
@@ -110,7 +114,6 @@ export class AirthingsWavePlatform implements DynamicPlatformPlugin {
       // something globally unique, but constant, for example, the device serial
       // number or MAC address
       const uuid = this.api.hap.uuid.generate(device.address);
-
       // see if an accessory with the same uuid has already been registered and restored from
       // the cached devices we stored in the `configureAccessory` method above
       const existingAccessory = this.accessories.get(uuid);
@@ -140,10 +143,12 @@ export class AirthingsWavePlatform implements DynamicPlatformPlugin {
 
         // store a copy of the device object in the `accessory.context`
         // the `context` property can be used to store any data about the accessory you may need
+        // storing information from the config.json files in the `context` object
         accessory.context.device = device;
 
         // create the accessory handler for the newly create accessory
         // this is imported from `platformAccessory.ts`
+        // The details information comes inside accessory.context.device
         new AirthingsWaveAccessory(this, accessory);
 
         // link the accessory to your platform
