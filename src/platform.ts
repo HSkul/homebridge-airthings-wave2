@@ -1,4 +1,4 @@
-Refactor conditional check for Wave device validationRefactor conditional check for Wave device validationRefactor conditional check for Wave device validationimport type { API, Characteristic, DynamicPlatformPlugin, Logging, PlatformAccessory, PlatformConfig, Service } from 'homebridge';
+import type { API, Characteristic, DynamicPlatformPlugin, Logging, PlatformAccessory, PlatformConfig, Service } from 'homebridge';
 
 import { AirthingsWaveAccessory } from './platformAccessory.js';
 import { PLATFORM_NAME, PLUGIN_NAME } from './settings.js';
