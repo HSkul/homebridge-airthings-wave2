@@ -69,7 +69,7 @@ export class AirthingsWaveAccessory {
     // set accessory information
     this.accessory.getService(this.platform.Service.AccessoryInformation)!
       .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Airthings')
-      .setCharacteristic(this.platform.Characteristic.Model, this.isWavePlus ? "Wave+" : "Wave")
+      .setCharacteristic(this.platform.Characteristic.Model, this.isWavePlus ? 'Wave+' : 'Wave')
       .setCharacteristic(this.platform.Characteristic.SerialNumber, this.address)
       .setCharacteristic(this.platform.Characteristic.FirmwareRevision, packageJson.version);
 
@@ -319,11 +319,11 @@ export class AirthingsWaveAccessory {
   getServices() {
     if(this.isWavePlus) {
       //return [this.informationService, this.temperatureService, this.humidityService, this.carbonDioxideService, this.airPressureService]
-      return [this.temperatureService, this.humidityService, this.carbonDioxideService]
+      return [this.temperatureService, this.humidityService, this.carbonDioxideService];
     }
     else {
       //return [this.informationService, this.temperatureService, this.humidityService]
-      return [this.temperatureService, this.humidityService]
+      return [this.temperatureService, this.humidityService];
     }
   }
   /**
