@@ -1,7 +1,7 @@
 import { type PlatformAccessory, type Service } from 'homebridge';
 // import { Characteristic, type CharacteristicValue, type PlatformAccessory, type Service } from 'homebridge';
 import type { AirthingsWavePlatform } from './platform.js';
-//import { CustomCharacteristic } from './customCharacteristics.js';
+import { CustomCharacteristic } from './customCharacteristics.js';
 
 import packageJson from '../package.json' with { type: 'json' };
 import { AirthingsWaveSensor, waveSensor } from './airthingsWave.ts';
@@ -122,7 +122,7 @@ export class AirthingsWaveAccessory {
     const RDLTA = 'RadonLTA';
     
     this.platform.log.debug('Does the temperature service have radon added: ',
-                            this.temperatureService.testCharacteristic(characteristic.RadonShortTermAverage));
+                            this.temperatureService.testCharacteristic(CustomCharacteristic.RadonShortTermAverage));
     this.platform.log.debug('Does the temperature service have temperature: ',this.temperatureService.testCharacteristic(this.name_temperature));
     if (!this.temperatureService.testCharacteristic(RDSTA)) {
       this.temperatureService.addCharacteristic(this.platform.customCharacteristic.characteristic.RadonShortTermAverage,RDSTA);
