@@ -109,7 +109,8 @@ export class AirthingsWavePlatform implements DynamicPlatformPlugin {
     */
     // loop over the discovered devices and register each one if it has not already been registered
     // We need to loop through the devices listed in the config.json
-    for (const device of this.config.devices) {
+    const devices = this.config.devices || [];
+    for (const device of devices) {
       // generate a unique id for the accessory this should be generated from
       // something globally unique, but constant, for example, the device serial
       // number or MAC address
