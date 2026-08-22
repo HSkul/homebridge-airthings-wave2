@@ -120,10 +120,10 @@ export class AirthingsWaveAccessory {
     const RDSTA = 'RadonSTA';
     const RDLTA = 'RadonLTA';
 
-    let customCharacteristic1 = this.temperatureService.testCharacteristic(RDSTA)
+    const customCharacteristic1 = this.temperatureService.testCharacteristic(RDSTA)
       ? this.temperatureService.getCharacteristic(RDSTA)
       : this.temperatureService.addCharacteristic(this.platform.customCharacteristic.characteristic.RadonShortTermAverage,RDSTA);
-    let customCharacteristic2 = this.temperatureService.testCharacteristic(RDLTA)
+    const customCharacteristic2 = this.temperatureService.testCharacteristic(RDLTA)
       ? this.temperatureService.getCharacteristic(RDLTA)
       : this.temperatureService.addCharacteristic(this.platform.customCharacteristic.characteristic.RadonLongTermAverage,RDLTA);
 
