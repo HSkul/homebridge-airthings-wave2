@@ -121,7 +121,7 @@ export class AirthingsWaveAccessory {
     this.temperatureService.addCharacteristic(this.platform.customCharacteristic.characteristic.RadonShortTermAverage, this.name_temperature);
     this.temperatureService.addCharacteristic(this.platform.customCharacteristic.characteristic.RadonLongTermAverage, this.name_temperature);
 
-    
+    this.platform.log.debug('Finished adding humidity, temperature, and radon');
     //this.carbonDioxideService = this.accessory.getService(this.name_CO2);
     
    
@@ -138,14 +138,16 @@ export class AirthingsWaveAccessory {
           maxValue: 5000,
           minStep: 1,
         });
-      this.carbonDioxideService.addCharacteristic(this.platform.customCharacteristic.characteristic.VOC_Level);
-      this.carbonDioxideService.addCharacteristic(this.platform.customCharacteristic.characteristic.Pressure);
-
+      this.carbonDioxideService.addCharacteristic(this.platform.customCharacteristic.characteristic.VOC_Level, this.name_CO2);
+      this.carbonDioxideService.addCharacteristic(this.platform.customCharacteristic.characteristic.Pressure, this.name_CO2);
+      this.platform.log.debug('Finished adding CO2, VOC, and pressure');
       //this.name_airpressure = AirthingsWavePlatform.config.name_airpressure || this.name;
       //const airPressureService = this.accessory.getService(this.name_airpressure)
       //|| this.accessory.addService(this.platform.Service.AirPressureSensor, this.name_airpressure);
     }
-
+    // Get the initial value of the sensors so we don't have to wait the first interval
+    this.devicePolling();
+    // Now setup the interval polling
     setInterval(this.devicePolling.bind(this), this.refresh * 1000);
 
     // Example: add two "motion sensor" services to the accessory
@@ -212,10 +214,10 @@ export class AirthingsWaveAccessory {
     //airthingswave.connect();
     airthingswave.readWave();
     
-    this.platform.log('Humidity: ', airthingswave.getvalue(waveSensor.humidity), airthingswave.getunit(waveSensor.humidity));
-    this.platform.log('Temperature: ', airthingswave.getvalue(waveSensor.temperature), airthingswave.getunit(waveSensor.temperature));
-    this.platform.log('Radon short term: ', airthingswave.getvalue(waveSensor.radonShortTermAverage), airthingswave.getunit(waveSensor.radonShortTermAverage));
-    this.platform.log('Radon long term: ', airthingswave.getvalue(waveSensor.radonLongTermAverage), airthingswave.getunit(waveSensor.radonLongTermAverage));
+    this.platform.log.info('Humidity: ', airthingswave.getvalue(waveSensor.humidity), airthingswave.getunit(waveSensor.humidity));
+    this.platform.log.info('Temperature: ', airthingswave.getvalue(waveSensor.temperature), airthingswave.getunit(waveSensor.temperature));
+    this.platform.log.info('Radon short term: ', airthingswave.getvalue(waveSensor.radonShortTermAverage), airthingswave.getunit(waveSensor.radonShortTermAverage));
+    this.platform.log.info('Radon long term: ', airthingswave.getvalue(waveSensor.radonLongTermAverage), airthingswave.getunit(waveSensor.radonLongTermAverage));
 
     this.humidityService
       .setCharacteristic(this.platform.Characteristic.CurrentRelativeHumidity, airthingswave.getvalue(waveSensor.humidity));
@@ -228,9 +230,9 @@ export class AirthingsWaveAccessory {
     
 
     if (this.isWavePlus) {
-      this.platform.log('Pressure: ', airthingswave.getvalue(waveSensor.pressure), airthingswave.getunit(waveSensor.pressure));
-      this.platform.log('Carbon dioxide: ', airthingswave.getvalue(waveSensor.co2Level), airthingswave.getunit(waveSensor.co2Level));
-      this.platform.log('Organics: ', airthingswave.getvalue(waveSensor.vocLevel), airthingswave.getunit(waveSensor.vocLevel));
+      this.platform.log.info('Pressure: ', airthingswave.getvalue(waveSensor.pressure), airthingswave.getunit(waveSensor.pressure));
+      this.platform.log.info('Carbon dioxide: ', airthingswave.getvalue(waveSensor.co2Level), airthingswave.getunit(waveSensor.co2Level));
+      this.platform.log.info('Organics: ', airthingswave.getvalue(waveSensor.vocLevel), airthingswave.getunit(waveSensor.vocLevel));
 
       //this.airPressureService
       //  .setCharacteristic(this.platform.Characteristic.CurrentAirPressure, airthingswave.getvalue(airthings_pressure));
