@@ -28,7 +28,7 @@
     "lint": "eslint . --max-warnings=0",
     "prepublishOnly": "npm run lint && npm run build",
     "watch": "npm run build && npm link && nodemon",
-    “prepare”: “npm run build”
+    "prepare": "npm run build"
   },
   "dependencies": {
     "homebridge-lib": "^8.0.1",
