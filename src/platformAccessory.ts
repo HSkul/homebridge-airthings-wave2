@@ -117,9 +117,18 @@ export class AirthingsWaveAccessory {
 
     this.temperatureService = this.accessory.getService(this.name_temperature)
       || this.accessory.addService(this.platform.Service.TemperatureSensor, this.name_temperature);
+    const RDSTA = 'RadonSTA';
+    const RDLTA = 'RadonLTA';
 
-    this.temperatureService.addCharacteristic(this.platform.customCharacteristic.characteristic.RadonShortTermAverage, this.name_temperature);
-    this.temperatureService.addCharacteristic(this.platform.customCharacteristic.characteristic.RadonLongTermAverage, this.name_temperature);
+    let customCharacteristic1 = this.temperatureService.testCharacteristic(RDSTA)
+      ? this.temperatureService.getCharacteristic(RDSTA)
+      : this.temperatureService.addCharacteristic(this.platform.customCharacteristic.characteristic.RadonShortTermAverage,RDSTA);
+    let customCharacteristic2 = this.temperatureService.testCharacteristic(RDLTA)
+      ? this.temperatureService.getCharacteristic(RDLTA)
+      : this.temperatureService.addCharacteristic(this.platform.customCharacteristic.characteristic.RadonLongTermAverage,RDLTA);
+
+    //this.temperatureService.addCharacteristic(this.platform.customCharacteristic.characteristic.RadonShortTermAverage, this.name_temperature);
+    //this.temperatureService.addCharacteristic(this.platform.customCharacteristic.characteristic.RadonLongTermAverage, this.name_temperature);
 
     this.platform.log.debug('Finished adding humidity, temperature, and radon');
     //this.carbonDioxideService = this.accessory.getService(this.name_CO2);
