@@ -75,7 +75,7 @@ export class AirthingsWavePlatform implements DynamicPlatformPlugin {
     this.accessories.set(accessory.UUID, accessory);
 
     // Is this how we update the values from the device by running the constructor?
-    new AirthingsWaveAccessory(this, accessory);
+    //new AirthingsWaveAccessory(this, accessory);
   }
 
   /**
