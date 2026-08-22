@@ -116,9 +116,10 @@ export class AirthingsWaveAccessory {
       || this.accessory.addService(this.platform.Service.HumiditySensor, this.name_humidity);
 
     this.temperatureService = this.accessory.getService(this.name_temperature)
-      || (this.accessory.addService(this.platform.Service.TemperatureSensor, this.name_temperature)
-      && this.temperatureService.addCharacteristic(this.platform.customCharacteristic.characteristic.RadonShortTermAverage)
-      && this.temperatureService.addCharacteristic(this.platform.customCharacteristic.characteristic.RadonLongTermAverage));
+      || this.accessory.addService(this.platform.Service.TemperatureSensor, this.name_temperature);
+
+    this.temperatureService.addCharacteristic(this.platform.customCharacteristic.characteristic.RadonShortTermAverage, this.name_temperature);
+    this.temperatureService.addCharacteristic(this.platform.customCharacteristic.characteristic.RadonLongTermAverage, this.name_temperature);
 
     
     //this.carbonDioxideService = this.accessory.getService(this.name_CO2);
