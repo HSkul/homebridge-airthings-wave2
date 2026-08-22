@@ -214,10 +214,14 @@ export class AirthingsWaveAccessory {
     //airthingswave.connect();
     airthingswave.readWave();
     
-    this.platform.log.info('Humidity: ', airthingswave.getvalue(waveSensor.humidity), airthingswave.getunit(waveSensor.humidity));
-    this.platform.log.info('Temperature: ', airthingswave.getvalue(waveSensor.temperature), airthingswave.getunit(waveSensor.temperature));
-    this.platform.log.info('Radon short term: ', airthingswave.getvalue(waveSensor.radonShortTermAverage), airthingswave.getunit(waveSensor.radonShortTermAverage));
-    this.platform.log.info('Radon long term: ', airthingswave.getvalue(waveSensor.radonLongTermAverage), airthingswave.getunit(waveSensor.radonLongTermAverage));
+    this.platform.log
+      .info('Humidity: ', airthingswave.getvalue(waveSensor.humidity), airthingswave.getunit(waveSensor.humidity));
+    this.platform.log
+      .info('Temperature: ', airthingswave.getvalue(waveSensor.temperature), airthingswave.getunit(waveSensor.temperature));
+    this.platform.log
+      .info('Radon short term: ', airthingswave.getvalue(waveSensor.radonShortTermAverage), airthingswave.getunit(waveSensor.radonShortTermAverage));
+    this.platform.log
+      .info('Radon long term: ', airthingswave.getvalue(waveSensor.radonLongTermAverage), airthingswave.getunit(waveSensor.radonLongTermAverage));
 
     this.humidityService
       .setCharacteristic(this.platform.Characteristic.CurrentRelativeHumidity, airthingswave.getvalue(waveSensor.humidity));
