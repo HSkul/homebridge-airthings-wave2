@@ -119,7 +119,7 @@ export class AirthingsWaveAccessory {
       || this.accessory.addService(this.platform.Service.TemperatureSensor, this.name_temperature);
     
     const RDSTA = 'Radon Short Term Average';
-    const RDLTA = 'Radon Long Term Average';
+    //const RDLTA = 'Radon Long Term Average';
     
     this.platform.log.debug('Does the temperature service have radon added: ', this.temperatureService.testCharacteristic(RDSTA));
     this.platform.log.debug('Does the temperature service have temperature: ', this.temperatureService.testCharacteristic(this.name_temperature));
