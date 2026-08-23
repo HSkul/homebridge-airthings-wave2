@@ -118,15 +118,14 @@ export class AirthingsWaveAccessory {
     this.temperatureService = this.accessory.getService(this.name_temperature)
       || this.accessory.addService(this.platform.Service.TemperatureSensor, this.name_temperature);
     
-    const RDSTA = 'RadonSTA';
-    const RDLTA = 'RadonLTA';
+    const RDSTA = 'Radon Short Term Average';
+    const RDLTA = 'Radon Long Term Average';
     
-    this.platform.log.debug('Does the temperature service have radon added: ',
-                            this.temperatureService.testCharacteristic(this.platform.customCharacteristic.characteristic[RadonShortTermAverage]));
-    this.platform.log.debug('Does the temperature service have temperature: ',this.temperatureService.testCharacteristic(this.name_temperature));
-    if (!this.temperatureService.testCharacteristic(this.platform.customCharacteristic.characteristic[RadonShortTermAverage])) {
-      this.temperatureService.addCharacteristic(this.platform.customCharacteristic.characteristic.RadonShortTermAverage,RDSTA);
-      this.temperatureService.addCharacteristic(this.platform.customCharacteristic.characteristic.RadonLongTermAverage,RDLTA);
+    this.platform.log.debug('Does the temperature service have radon added: ', this.temperatureService.testCharacteristic(RDSTA));
+    this.platform.log.debug('Does the temperature service have temperature: ', this.temperatureService.testCharacteristic(this.name_temperature));
+    if (!this.temperatureService.testCharacteristic(RDSTA)) {
+      this.temperatureService.addCharacteristic(this.platform.customCharacteristic.characteristic.RadonShortTermAverage);
+      this.temperatureService.addCharacteristic(this.platform.customCharacteristic.characteristic.RadonLongTermAverage);
     }
     
     //this.temperatureService.addCharacteristic(this.platform.customCharacteristic.characteristic.RadonShortTermAverage, this.name_temperature);
