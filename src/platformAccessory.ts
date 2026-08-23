@@ -122,7 +122,7 @@ export class AirthingsWaveAccessory {
     const RDLTA = 'RadonLTA';
     
     this.platform.log.debug('Does the temperature service have radon added: ',
-                            this.temperatureService.testCharacteristic(this.platform.customCharacteristic.RadonShortTermAverage));
+                            this.temperatureService.testCharacteristic(this.platform.customCharacteristic.characteristic.RadonShortTermAverage));
     this.platform.log.debug('Does the temperature service have temperature: ',this.temperatureService.testCharacteristic(this.name_temperature));
     if (!this.temperatureService.testCharacteristic(RDSTA)) {
       this.temperatureService.addCharacteristic(this.platform.customCharacteristic.characteristic.RadonShortTermAverage,RDSTA);
