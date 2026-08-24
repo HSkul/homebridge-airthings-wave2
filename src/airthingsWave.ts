@@ -197,7 +197,7 @@ export class AirthingsWaveSensor {
         this.log.error(`BLE Operation Failed: ${error.message}`);
         // Timeout probably means it didn't find the device
         if (error.message.includes('timed.out.Timeout')) {
-          this.log.error('Did not find device at address: ', this.macaddr)
+          this.log.error('Did not find device at address: ', this.macaddr);
           // Handle other BlueZ rejections
         } else if (error.message.includes('org.bluez.Error.Failed')) {
           this.log.error('Is bluetooth setup properly?');
