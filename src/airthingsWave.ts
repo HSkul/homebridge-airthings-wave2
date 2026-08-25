@@ -1,19 +1,7 @@
 // Create bluetooth adapter instance
 import { Logging } from 'homebridge';
-//import { createBluetooth, Adapter, Device, GattServer } from 'node-ble';
 import { createBluetooth, Device } from 'node-ble';
 import { AirthingsWavePlatform } from './platform.ts';
-//import { waveSensor } from './types.ts';
-
-
-// Orders of values in the array
-//const SENSOR_IDX_HUMIDITY = 0;
-//const SENSOR_IDX_TEMPERATURE = 1;
-//const SENSOR_IDX_RADON_SHORT_TERM_AVG = 2;
-//const SENSOR_IDX_RADON_LONG_TERM_AVG = 3;
-//const SENSOR_IDX_REL_ATM_PRESSURE = 4;
-//const SENSOR_IDX_CO2_LVL = 5;
-//const SENSOR_IDX_VOC_LVL = 6;
 
 export enum waveSensor {
   humidity = 0,
@@ -69,6 +57,7 @@ export class AirthingsWaveSensor {
   async readWave() {
     const { bluetooth, destroy } = createBluetooth();
     let device: Device | undefined = undefined;
+    // Use a try-catch block to handle errors during the BLE operations
     try {
       const adapter = await bluetooth.defaultAdapter();
       // Start discovery of bluetooth devices
@@ -76,7 +65,6 @@ export class AirthingsWaveSensor {
         await adapter.startDiscovery();
       }
       // Wait for the device to be discovered
-      //const
       device = await adapter.waitDevice(this.macaddr);  
       // Wait for the device to be connected
       await device.connect();
@@ -103,10 +91,9 @@ export class AirthingsWaveSensor {
       // Get the primary service for the device, depending on whether it is a Wave or Wave+
       const service = await gattServer.getPrimaryService(this.primaryservice_uuid[Number(this.isWavePlus)]);
       this.log.info('Connected to device: ', deviceName, ' at address: ', btaddress);
+      
       // Now the code depends on the type of wave, since Wave+ reads all values in one read, 
       // while Wave reads each characteristic separately.  So we will have to check the type of wave and read accordingly
-
-
       if (this.isWavePlus) {
         // Read from a Wave+
         this.log.info('Reading from Wave+ device: ', deviceName, ' at address: ', btaddress);
@@ -181,6 +168,7 @@ export class AirthingsWaveSensor {
         this.sensor_data[waveSensor.radonLongTermAverage] = this.conv2radon(rawValue);
 
       }
+      // Log the values read from the device
       this.log.info('Humidity: ', this.sensor_data[waveSensor.humidity], this.sensor_units[waveSensor.humidity]);
       this.log.info('Temperature: ', this.sensor_data[waveSensor.temperature], this.sensor_units[waveSensor.temperature]);
       this.log.info('Radon short term average: ', this.sensor_data[waveSensor.radonShortTermAverage], this.sensor_units[waveSensor.radonShortTermAverage]);
@@ -196,10 +184,10 @@ export class AirthingsWaveSensor {
       if (error instanceof Error) {
         this.log.error(`BLE Operation Failed: ${error.message}`);
         // Timeout probably means it didn't find the device
-        if (error.message.includes('timed.out.Timeout')) {
+        if (error.message.includes('timed out')) {
           this.log.error('Did not find device at address: ', this.macaddr);
           // Handle other BlueZ rejections
-        } else if (error.message.includes('org.bluez.Error.Failed')) {
+        } else if (error.message.includes('bluez')) {
           this.log.error('Is bluetooth setup properly?');
         } else {
           this.log.error('An unexpected error occurred:', error);
