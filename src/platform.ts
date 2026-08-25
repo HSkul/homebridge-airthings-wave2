@@ -1,24 +1,9 @@
 import type { API, Characteristic, DynamicPlatformPlugin, Logging, PlatformAccessory, PlatformConfig, Service } from 'homebridge';
-
 import { AirthingsWaveAccessory } from './platformAccessory.js';
 import { PLATFORM_NAME, PLUGIN_NAME } from './settings.js';
 import { CustomCharacteristic } from './customCharacteristics.js';
 
-// This is only required when using Custom Services and Characteristics not support by HomeKit
-// Probably don't need this
-//import { EveHomeKitTypes } from 'homebridge-lib/EveHomeKitTypes';
 
-// Instead, we are importing our custom characteristics
-//import { RadonLongTermAverage, RadonShortTermAverage, VOC_Level } from './customCharacteristics.js';
-// The platform name is: AirThingsWavePlugin
-// The platform class is: AirThingsWavePlatform
-
-
-/**
- * HomebridgePlatform
- * This class is the main constructor for your plugin, this is where you should
- * parse the user config and discover/register accessories with Homebridge.
- */
 
 export class AirthingsWavePlatform implements DynamicPlatformPlugin {
   public readonly Service: typeof Service;
@@ -28,9 +13,6 @@ export class AirthingsWavePlatform implements DynamicPlatformPlugin {
   public readonly accessories: Map<string, PlatformAccessory> = new Map();
   public readonly discoveredCacheUUIDs: string[] = [];
   public customCharacteristic: CustomCharacteristic;
-  // This is only required when using Custom Services and Characteristics not support by HomeKit
-  
-  //public readonly CustomServices: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public readonly CustomCharacteristics: any;
 
@@ -42,12 +24,6 @@ export class AirthingsWavePlatform implements DynamicPlatformPlugin {
     this.Service = api.hap.Service;
     this.Characteristic = api.hap.Characteristic;
     this.customCharacteristic = new CustomCharacteristic(api);
-
-
-    // Looks like these CustomServices and CustomCharacteristics come in as an array of definitions
-    // This is only required when using Custom Services and Characteristics not support by HomeKit
-    //this.CustomServices = new EveHomeKitTypes(this.api).Services;
-    //this.CustomCharacteristics = new EveHomeKitTypes(this.api).Characteristics;
 
     this.log.info('Finished initializing platform:', this.config.name);
 
@@ -62,12 +38,8 @@ export class AirthingsWavePlatform implements DynamicPlatformPlugin {
     });
   }
 
-  /**
-   * This function is invoked when homebridge restores cached accessories from disk at startup.
-   * It should be used to set up event handlers for characteristics and update respective values.
-   * --> it should take AirthingsWaveAccessory? as a parameter, and call the devicePolling() method 
-   * on it to read the values from the device
-   */
+  // This function is called when the platform is initialized, and it is used to restore cached 
+  // accessories from disk. It should be used to set up event handlers for characteristics and update respective values.
   configureAccessory(accessory: PlatformAccessory) {
     this.log.info('Loading accessory from cache:', accessory.displayName);
 
@@ -86,28 +58,8 @@ export class AirthingsWavePlatform implements DynamicPlatformPlugin {
   // We shouldn't really need this
   
   discoverDevices() {
-    // EXAMPLE ONLY
-    // A real plugin you would discover accessories from the local network, cloud services
-    // or a user-defined array in the platform config.
-    /*
-    const exampleDevices = [
-      {
-        exampleUniqueId: 'ABCD',
-        exampleDisplayName: 'Bedroom',
-      },
-      {
-        exampleUniqueId: 'EFGH',
-        exampleDisplayName: 'Kitchen',
-      },
-      {
-        // This is an example of a device which uses a Custom Service
-        exampleUniqueId: 'IJKL',
-        exampleDisplayName: 'Backyard',
-        CustomService: 'AirPressureSensor',
-      },
-    ];
-    */
-    // loop over the discovered devices and register each one if it has not already been registered
+    this.log.debug('Discovering devices...');
+    // Loop over the discovered devices and register each one if it has not already been registered
     // We need to loop through the devices listed in the config.json
     const devices = this.config.devices || [];
     for (const device of devices) {
