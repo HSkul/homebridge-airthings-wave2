@@ -75,14 +75,14 @@ export class AirthingsWaveAccessory {
           maxValue: 5000,
           minStep: 1,
         });
-      const VOCL = this.platform.customCharacteristic.characteristic.VOC_Level.UUID;
-      const PR = this.platform.customCharacteristic.characteristic.Pressure.UUID;
+      const VOCL = this.customCharacteristic.characteristic.VOC_Level.UUID;
+      const PR = this.customCharacteristic.characteristic.Pressure.UUID;
 
       if(!this.carbonDioxideService.testCharacteristic(VOCL)) {
-        this.carbonDioxideService.addCharacteristic(this.platform.customCharacteristic.characteristic.VOC_Level, this.name_CO2);
+        this.carbonDioxideService.addCharacteristic(this.customCharacteristic.characteristic.VOC_Level, this.name_CO2);
       }
       if(!this.carbonDioxideService.testCharacteristic(PR)) {
-        this.carbonDioxideService.addCharacteristic(this.platform.customCharacteristic.characteristic.Pressure, this.name_CO2);
+        this.carbonDioxideService.addCharacteristic(this.customCharacteristic.characteristic.Pressure, this.name_CO2);
       }
       this.platform.log.debug('Finished adding CO2, VOC, and pressure');
     }
@@ -116,9 +116,9 @@ export class AirthingsWaveAccessory {
     this.temperatureService
       .setCharacteristic(this.platform.Characteristic.CurrentTemperature, airthingswave.getvalue(waveSensor.temperature));
     this.temperatureService
-      .setCharacteristic(this.platform.customCharacteristic.characteristic.RadonShortTermAverage, airthingswave.getvalue(waveSensor.radonShortTermAverage));
+      .setCharacteristic(this.customCharacteristic.characteristic.RadonShortTermAverage, airthingswave.getvalue(waveSensor.radonShortTermAverage));
     this.temperatureService
-      .setCharacteristic(this.platform.customCharacteristic.characteristic.RadonLongTermAverage, airthingswave.getvalue(waveSensor.radonLongTermAverage));
+      .setCharacteristic(this.customCharacteristic.characteristic.RadonLongTermAverage, airthingswave.getvalue(waveSensor.radonLongTermAverage));
 
     if (this.isWavePlus) {
       this.platform.log.info('Pressure: ', airthingswave.getvalue(waveSensor.pressure), airthingswave.getunit(waveSensor.pressure));
@@ -128,9 +128,9 @@ export class AirthingsWaveAccessory {
       this.carbonDioxideService?.setCharacteristic(
         this.platform.Characteristic.CarbonDioxideLevel, airthingswave.getvalue(waveSensor.co2Level));
       this.carbonDioxideService?.setCharacteristic(
-        this.platform.customCharacteristic.characteristic.VOC_Level, airthingswave.getvalue(waveSensor.vocLevel));
+        this.customCharacteristic.characteristic.VOC_Level, airthingswave.getvalue(waveSensor.vocLevel));
       this.carbonDioxideService?.setCharacteristic(
-        this.platform.customCharacteristic.characteristic.Pressure, airthingswave.getvalue(waveSensor.pressure));
+        this.customCharacteristic.characteristic.Pressure, airthingswave.getvalue(waveSensor.pressure));
       
     }
   }
