@@ -48,8 +48,8 @@ export class AirthingsWaveAccessory {
     this.temperatureService = this.accessory.getService(this.name_temperature)
       || this.accessory.addService(this.platform.Service.TemperatureSensor, this.name_temperature);
     
-    const RDSTA = this.platform.customCharacteristic.characteristic.RadonShortTermAverage.displayName;
-    const RDLTA = this.platform.customCharacteristic.characteristic.RadonLongTermAverage.displayName;
+    const RDSTA = this.platform.customCharacteristic.characteristic.RadonShortTermAverage.name;
+    const RDLTA = this.platform.customCharacteristic.characteristic.RadonLongTermAverage.name;
     
     if (!this.temperatureService.testCharacteristic(RDSTA)) {
       this.temperatureService.addCharacteristic(this.platform.customCharacteristic.characteristic.RadonShortTermAverage);
