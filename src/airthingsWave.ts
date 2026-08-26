@@ -199,7 +199,9 @@ export class AirthingsWaveSensor {
         await device.disconnect();
       }
       // Free up DBus network connection
-      destroy(); 
+      destroy();
+      // Wait 10s to ensure everything has disconnected
+      await sleep(10000);
     }
   }
 
