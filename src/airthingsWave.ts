@@ -201,7 +201,10 @@ export class AirthingsWaveSensor {
       // Free up DBus network connection
       destroy();
       // Wait 10s to ensure everything has disconnected
-      await sleep(10000);
+      // Helper function that returns a Promise
+const sleep = (ms: number): Promise<void> => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
     }
   }
 
@@ -220,4 +223,8 @@ export class AirthingsWaveSensor {
     }
     return radon;
   }
+}
+// Helper function that returns a Promise
+const sleep = (ms: number): Promise<void> => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
