@@ -223,5 +223,5 @@ export class AirthingsWaveSensor {
   // Helper function that returns a Promise
   sleep = (ms: number): Promise<void> => {
     return new Promise((resolve) => setTimeout(resolve, ms));
-  }
+  };
 }
