@@ -53,6 +53,8 @@ export class AirthingsWaveAccessory {
     
     const RDSTA = this.customCharacteristic.characteristic.RadonShortTermAverage.name;
     const RDLTA = this.customCharacteristic.characteristic.RadonLongTermAverage.name;
+    this.platform.log.debug('RDSTA is: ',RDSTA);
+    this.platform.log.debug('RDLTA is: ',RDLTA);
     
     if (!this.temperatureService.testCharacteristic(RDSTA)) {
       this.platform.log.debug('Now adding Radon Short Term Average');
@@ -79,7 +81,9 @@ export class AirthingsWaveAccessory {
         });
       const VOCL = this.customCharacteristic.characteristic.VOC_Level.UUID;
       const PR = this.customCharacteristic.characteristic.Pressure.UUID;
-
+      this.platform.log.debug('VOCL is: ',VOCL);
+      this.platform.log.debug('PR is: ',PR);
+      
       if(!this.carbonDioxideService.testCharacteristic(VOCL)) {
         this.platform.log.debug('Now adding VOC Level');
         this.carbonDioxideService.addCharacteristic(this.customCharacteristic.characteristic.VOC_Level, this.name_CO2);
