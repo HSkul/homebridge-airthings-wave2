@@ -2,6 +2,7 @@ import { type PlatformAccessory, type Service } from 'homebridge';
 import type { AirthingsWavePlatform } from './platform.js';
 import packageJson from '../package.json' with { type: 'json' };
 import { AirthingsWaveSensor, waveSensor } from './airthingsWave.ts';
+import { CustomCharacteristic } from './customCharacteristics.js';
 
 /**
  * Platform Accessory
@@ -16,6 +17,7 @@ export class AirthingsWaveAccessory {
   private name_CO2?: string = '';
   private refresh: number;
   private address: string;
+  private customCharacteristic: CustomCharacteristic;
   private temperatureService: Service;
   private humidityService: Service;
   private carbonDioxideService?: Service;
@@ -32,6 +34,7 @@ export class AirthingsWaveAccessory {
     this.name_humidity = accessory.context.device.name_humidity || this.name;
     this.refresh = accessory.context.device.refresh || 3600; // Update every hour
     this.address = accessory.context.device.address;
+    this.customCharacteristic = new CustomCharacteristic(this.platform.api);
     this.devicePolling.bind(this);
 
     // Set accessory information
@@ -48,14 +51,14 @@ export class AirthingsWaveAccessory {
     this.temperatureService = this.accessory.getService(this.name_temperature)
       || this.accessory.addService(this.platform.Service.TemperatureSensor, this.name_temperature);
     
-    const RDSTA = this.platform.customCharacteristic.characteristic.RadonShortTermAverage.name;
-    const RDLTA = this.platform.customCharacteristic.characteristic.RadonLongTermAverage.name;
+    const RDSTA = this.customCharacteristic.characteristic.RadonShortTermAverage.name;
+    const RDLTA = this.customCharacteristic.characteristic.RadonLongTermAverage.name;
     
     if (!this.temperatureService.testCharacteristic(RDSTA)) {
-      this.temperatureService.addCharacteristic(this.platform.customCharacteristic.characteristic.RadonShortTermAverage);
+      this.temperatureService.addCharacteristic(this.customCharacteristic.characteristic.RadonShortTermAverage);
     }
     if (!this.temperatureService.testCharacteristic(RDLTA)) {
-      this.temperatureService.addCharacteristic(this.platform.customCharacteristic.characteristic.RadonLongTermAverage);
+      this.temperatureService.addCharacteristic(this.customCharacteristic.characteristic.RadonLongTermAverage);
     }
     
     this.platform.log.debug('Finished adding humidity, temperature, and radon');
