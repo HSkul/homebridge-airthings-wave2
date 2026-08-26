@@ -1,7 +1,7 @@
 import type { API, Characteristic, DynamicPlatformPlugin, Logging, PlatformAccessory, PlatformConfig, Service } from 'homebridge';
 import { AirthingsWaveAccessory } from './platformAccessory.js';
 import { PLATFORM_NAME, PLUGIN_NAME } from './settings.js';
-import { CustomCharacteristic } from './customCharacteristics.js';
+//import { CustomCharacteristic } from './customCharacteristics.js';
 
 
 
@@ -12,9 +12,9 @@ export class AirthingsWavePlatform implements DynamicPlatformPlugin {
   // this is used to track restored cached accessories
   public readonly accessories: Map<string, PlatformAccessory> = new Map();
   public readonly discoveredCacheUUIDs: string[] = [];
-  public customCharacteristic: CustomCharacteristic;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public readonly CustomCharacteristics: any;
+  //public customCharacteristic: CustomCharacteristic;
+  // XXeslint-XXdisable-next-line @typescript-eslint/no-explicit-any
+  //public readonly CustomCharacteristics: any;
 
   constructor(
     public readonly log: Logging,
@@ -23,7 +23,7 @@ export class AirthingsWavePlatform implements DynamicPlatformPlugin {
   ) {
     this.Service = api.hap.Service;
     this.Characteristic = api.hap.Characteristic;
-    this.customCharacteristic = new CustomCharacteristic(api);
+    //this.customCharacteristic = new CustomCharacteristic(api);
 
     this.log.info('Finished initializing platform:', this.config.name);
 
