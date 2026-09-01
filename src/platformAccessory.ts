@@ -17,10 +17,10 @@ export class AirthingsWaveAccessory {
   private name_CO2?: string = '';
   private refresh: number;
   private address: string;
-  private radonShortTermAverageCharacteristic: any;
-  private radonLongTermAverageCharacteristic: any;
-  private vocLevelCharacteristic?: any;
-  private pressureCharacteristic?: any; 
+  private radonShortTermAverageCharacteristic: unknown;
+  private radonLongTermAverageCharacteristic: unknown;
+  private vocLevelCharacteristic?: unknown;
+  private pressureCharacteristic?: unknown; 
   private temperatureService: Service;
   private humidityService: Service;
   private carbonDioxideService?: Service;
