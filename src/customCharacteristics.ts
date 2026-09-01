@@ -2,7 +2,140 @@
 // Custom Characteristics for use with Airthing Wave/Wave+ radon detector
 ////////////////////////////////////////////////////////////////////////////////////////
 
-import { API, Characteristic, CharacteristicProps, Formats, Perms, WithUUID } from 'homebridge';
+import { API, Characteristic as HomebridgeCharacteristic, Formats, Perms } from 'homebridge';
+
+type CustomCharacteristicConstructor = new () => HomebridgeCharacteristic;
+
+export function createRadonCharacteristics(api: API): {
+  RadonLongTermAverage: CustomCharacteristicConstructor;
+  RadonShortTermAverage: CustomCharacteristicConstructor;
+} {
+  const Characteristic = api.hap.Characteristic;
+
+  class RadonLongTermAverage extends Characteristic {
+    public static readonly UUID: string = 'B42E0A4C-ADE7-11E4-89D3-123B93F75CBA';
+    constructor() {
+      super('Radon Long Term Average', RadonLongTermAverage.UUID, {
+        format: Formats.UINT16,
+        perms: [Perms.PAIRED_READ, Perms.NOTIFY],
+        minValue: 0,
+        maxValue: 1000,
+        minStep: 1
+      });
+      this.value = this.getDefaultValue();
+    }
+  }
+
+  class RadonShortTermAverage extends Characteristic {
+    public static readonly UUID: string = 'B42E01AA-ADE7-11E4-89D3-123B93F75CBA';
+    constructor() {
+      super('Radon Short Term Average', RadonShortTermAverage.UUID, {
+        format: Formats.UINT16,
+        perms: [Perms.PAIRED_READ, Perms.NOTIFY],
+        minValue: 0,
+        maxValue: 1000,
+        minStep: 1
+      });
+      this.value = this.getDefaultValue();
+    }
+  }
+  return { RadonLongTermAverage, RadonShortTermAverage };
+}
+
+export function createAirQualityCharacteristics(api: API): {
+  VOC_Level: CustomCharacteristicConstructor;
+  Pressure: CustomCharacteristicConstructor;
+} {
+  const Characteristic = api.hap.Characteristic;
+
+  class VOC_Level extends Characteristic {
+    public static readonly UUID: string = 'B42E41C4-ADE7-11E4-89D3-123B93F75CBA';
+    constructor() {
+      super('VOC Level', VOC_Level.UUID, {
+        format: Formats.FLOAT,
+        perms: [Perms.PAIRED_READ, Perms.NOTIFY],
+        minValue: 0,
+        maxValue: 5000,
+        minStep: 1
+      });
+      this.value = this.getDefaultValue();
+    }
+  }
+
+  class Pressure extends Characteristic {
+    public static readonly UUID: string = '873AE82A-4C5A-4342-B539-9D900BF7EBD0';
+    constructor() {
+      super('Pressure', Pressure.UUID, {
+        format: Formats.UINT16,
+        perms: [Perms.PAIRED_READ, Perms.NOTIFY],
+        minValue: 0,
+        maxValue: 1200,
+        minStep: 1
+      });
+      this.value = this.getDefaultValue();
+    }
+  }
+  return { VOC_Level, Pressure };
+}
+
+/*
+export class RadonLongTermAverage extends Characteristic {
+  public static readonly UUID: string = 'B42E0A4C-ADE7-11E4-89D3-123B93F75CBA';
+
+  constructor() {
+    super('Radon Long Term Average', RadonLongTermAverage.UUID, {
+      format: Formats.UINT16,
+      perms: [Perms.PAIRED_READ, Perms.NOTIFY],
+      minValue: 0,
+      maxValue: 1000,
+      minStep: 1
+    });
+  }
+}
+
+export class RadonShortTermAverage extends Characteristic {
+  public static readonly UUID: string = 'B42E01AA-ADE7-11E4-89D3-123B93F75CBA';
+
+  constructor() {
+    super('Radon Short Term Average', RadonShortTermAverage.UUID, {
+      format: Formats.UINT16,
+      perms: [Perms.PAIRED_READ, Perms.NOTIFY],
+      minValue: 0,
+      maxValue: 1000,
+      minStep: 1
+    });
+  }
+}
+
+export class VOC_Level extends Characteristic {
+  public static readonly UUID: string = 'B42E41C4-ADE7-11E4-89D3-123B93F75CBA';
+
+  constructor() {
+    super('VOC Level', VOC_Level.UUID, {
+      format: Formats.FLOAT,
+      perms: [Perms.PAIRED_READ, Perms.NOTIFY],
+      minValue: 0,
+      maxValue: 5000,
+      minStep: 1
+    });
+  }
+}
+
+export class Pressure extends Characteristic {
+  public static readonly UUID: string = '873AE82A-4C5A-4342-B539-9D900BF7EBD0';
+
+  constructor() {
+    super('Pressure', Pressure.UUID, {
+      format: Formats.UINT16,
+      perms: [Perms.PAIRED_READ, Perms.NOTIFY],
+      minValue: 0,
+      maxValue: 1200,
+      minStep: 1
+    });
+  }
+}
+*/
+/*
 
 export class CustomCharacteristic {
 
@@ -17,7 +150,7 @@ export class CustomCharacteristic {
       perms: [Perms.PAIRED_READ, Perms.NOTIFY],
       minValue: 0,
       maxValue: 1000,
-      minStep: 1,
+      minStep: 1
     }, 'Radon Long Term Average');
 
     this.createCharacteristics('RadonShortTermAverage', 'B42E01AA-ADE7-11E4-89D3-123B93F75CBA', {
@@ -25,7 +158,7 @@ export class CustomCharacteristic {
       perms: [Perms.PAIRED_READ, Perms.NOTIFY],
       minValue: 0,
       maxValue: 1000,
-      minStep: 1,
+      minStep: 1
     }, 'Radon Short Term Average');
 
     this.createCharacteristics('VOC_Level', 'B42E41C4-ADE7-11E4-89D3-123B93F75CBA', {
@@ -33,7 +166,7 @@ export class CustomCharacteristic {
       perms: [Perms.PAIRED_READ, Perms.NOTIFY],
       minValue: 0,
       maxValue: 5000,
-      minStep: 1,
+      minStep: 1
     }, 'VOC Level');
 
     this.createCharacteristics('Pressure', '873AE82A-4C5A-4342-B539-9D900BF7EBD0', {
@@ -41,7 +174,7 @@ export class CustomCharacteristic {
       perms: [Perms.PAIRED_READ, Perms.NOTIFY],
       minValue: 0,
       maxValue: 1200,
-      minStep: 1,
+      minStep: 1
     }, 'Pressure');
   }
 
@@ -52,9 +185,8 @@ export class CustomCharacteristic {
         super(displayName, uuid, props);
         this.value = this.getDefaultValue();
       }
-    };
+    }
   }
 }
 
-
-
+*/
