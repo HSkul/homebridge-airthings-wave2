@@ -20,7 +20,7 @@ export function createRadonCharacteristics(api: API): {
         perms: [Perms.PAIRED_READ, Perms.NOTIFY],
         minValue: 0,
         maxValue: 1000,
-        minStep: 1
+        minStep: 1,
       });
       this.value = this.getDefaultValue();
     }
@@ -34,7 +34,7 @@ export function createRadonCharacteristics(api: API): {
         perms: [Perms.PAIRED_READ, Perms.NOTIFY],
         minValue: 0,
         maxValue: 1000,
-        minStep: 1
+        minStep: 1,
       });
       this.value = this.getDefaultValue();
     }
@@ -56,7 +56,7 @@ export function createAirQualityCharacteristics(api: API): {
         perms: [Perms.PAIRED_READ, Perms.NOTIFY],
         minValue: 0,
         maxValue: 5000,
-        minStep: 1
+        minStep: 1,
       });
       this.value = this.getDefaultValue();
     }
@@ -70,7 +70,7 @@ export function createAirQualityCharacteristics(api: API): {
         perms: [Perms.PAIRED_READ, Perms.NOTIFY],
         minValue: 0,
         maxValue: 1200,
-        minStep: 1
+        minStep: 1,
       });
       this.value = this.getDefaultValue();
     }
