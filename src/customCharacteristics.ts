@@ -2,17 +2,16 @@
 // Custom Characteristics for use with Airthing Wave/Wave+ radon detector
 ////////////////////////////////////////////////////////////////////////////////////////
 
-import { API, Characteristic as HomebridgeCharacteristic, Formats, Perms } from 'homebridge';
+import { API, Characteristic, Formats, Perms } from 'homebridge';
 
-type CustomCharacteristicConstructor = new () => HomebridgeCharacteristic;
+//type CustomCharacteristicConstructor = new () => Characteristic;
+type CharacteristicClass = typeof Characteristic;
 
 export function createRadonCharacteristics(api: API): {
-  RadonLongTermAverage: CustomCharacteristicConstructor;
-  RadonShortTermAverage: CustomCharacteristicConstructor;
+  RadonLongTermAverage: CharacteristicClass;
+  RadonShortTermAverage: CharacteristicClass;
 } {
-  const Characteristic = api.hap.Characteristic;
-
-  class RadonLongTermAverage extends Characteristic {
+  class RadonLongTermAverage extends api.hap.Characteristic {
     public static readonly UUID: string = 'B42E0A4C-ADE7-11E4-89D3-123B93F75CBA';
     constructor() {
       super('Radon Long Term Average', RadonLongTermAverage.UUID, {
@@ -26,7 +25,7 @@ export function createRadonCharacteristics(api: API): {
     }
   }
 
-  class RadonShortTermAverage extends Characteristic {
+  class RadonShortTermAverage extends api.hap.Characteristic {
     public static readonly UUID: string = 'B42E01AA-ADE7-11E4-89D3-123B93F75CBA';
     constructor() {
       super('Radon Short Term Average', RadonShortTermAverage.UUID, {
@@ -39,12 +38,13 @@ export function createRadonCharacteristics(api: API): {
       this.value = this.getDefaultValue();
     }
   }
+
   return { RadonLongTermAverage, RadonShortTermAverage };
 }
 
 export function createAirQualityCharacteristics(api: API): {
-  VOC_Level: CustomCharacteristicConstructor;
-  Pressure: CustomCharacteristicConstructor;
+  VOC_Level: CharacteristicClass;
+  Pressure: CharacteristicClass;
 } {
   const Characteristic = api.hap.Characteristic;
 
@@ -75,6 +75,7 @@ export function createAirQualityCharacteristics(api: API): {
       this.value = this.getDefaultValue();
     }
   }
+
   return { VOC_Level, Pressure };
 }
 
