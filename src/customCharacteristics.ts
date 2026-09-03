@@ -28,7 +28,7 @@ export function createRadonCharacteristics(api: API): {
   class RadonShortTermAverage extends api.hap.Characteristic {
     public static readonly UUID: string = 'B42E01AA-ADE7-11E4-89D3-123B93F75CBA';
     constructor() {
-      super('Radon Short Term Average', RadonShortTermAverage.UUID, {
+      super('RadonShortTermAverage', RadonShortTermAverage.UUID, {
         format: Formats.UINT16,
         perms: [Perms.PAIRED_READ, Perms.NOTIFY],
         minValue: 0,
