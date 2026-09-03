@@ -1,4 +1,4 @@
-import { type PlatformAccessory, type Service, Characteristic } from 'homebridge';
+import { type PlatformAccessory, type Service } from 'homebridge';
 import type { AirthingsWavePlatform } from './platform.js';
 import packageJson from '../package.json' with { type: 'json' };
 import { AirthingsWaveSensor, waveSensor } from './airthingsWave.ts';
