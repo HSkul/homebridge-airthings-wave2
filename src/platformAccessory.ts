@@ -67,8 +67,9 @@ export class AirthingsWaveAccessory {
     const RDSTA = this.radonShortTermAverageCharacteristic.name;
     const RDLTA = this.radonLongTermAverageCharacteristic.name;
     this.platform.log.debug('RDSTA is: ',RDSTA);
+    this.platform.log.debug('testCharactersitic(RDLTA) is: ',this.temperatureService.testCharacteristic(RDLTA));
     this.platform.log.debug('RDLTA is: ',RDLTA);
-    this.platform.log.debug('=====================');
+    this.platform.log.debug('testCharactersitic(RDSTA) is: ',this.temperatureService.testCharacteristic(RDSTA));
     
     if (!this.temperatureService.testCharacteristic(RDSTA)) {
       this.temperatureService.addCharacteristic(this.radonShortTermAverageCharacteristic);
