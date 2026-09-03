@@ -14,7 +14,7 @@ export function createRadonCharacteristics(api: API): {
   class RadonLongTermAverage extends api.hap.Characteristic {
     public static readonly UUID: string = 'B42E0A4C-ADE7-11E4-89D3-123B93F75CBA';
     constructor() {
-      super('Radon Long Term Average', RadonLongTermAverage.UUID, {
+      super('RadonLongTermAverage', RadonLongTermAverage.UUID, {
         format: Formats.UINT16,
         perms: [Perms.PAIRED_READ, Perms.NOTIFY],
         minValue: 0,
@@ -51,7 +51,7 @@ export function createAirQualityCharacteristics(api: API): {
   class VOC_Level extends Characteristic {
     public static readonly UUID: string = 'B42E41C4-ADE7-11E4-89D3-123B93F75CBA';
     constructor() {
-      super('VOC Level', VOC_Level.UUID, {
+      super('VOC_Level', VOC_Level.UUID, {
         format: Formats.FLOAT,
         perms: [Perms.PAIRED_READ, Perms.NOTIFY],
         minValue: 0,
