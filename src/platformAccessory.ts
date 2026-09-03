@@ -1,4 +1,4 @@
-import { type PlatformAccessory, type Service } from 'homebridge';
+import { type PlatformAccessory, type Service, Characteristic } from 'homebridge';
 import type { AirthingsWavePlatform } from './platform.js';
 import packageJson from '../package.json' with { type: 'json' };
 import { AirthingsWaveSensor, waveSensor } from './airthingsWave.ts';
@@ -17,15 +17,16 @@ export class AirthingsWaveAccessory {
   private name_CO2?: string = '';
   private refresh: number;
   private address: string;
-  private radonShortTermAverageCharacteristic: unknown;
-  private radonLongTermAverageCharacteristic: unknown;
-  private vocLevelCharacteristic?: unknown;
-  private pressureCharacteristic?: unknown; 
+  //private radonCharacteristics: Characterstic[];
+  private radonShortTermAverageCharacteristic;
+  private radonLongTermAverageCharacteristic;
+  private vocLevelCharacteristic?;
+  private pressureCharacteristic?;
   private temperatureService: Service;
   private humidityService: Service;
   private carbonDioxideService?: Service;
 
-  // The device information from the config file comes in with the accessory.context.device
+  // The device information from the config file comes in with the accessory.context.devices
   constructor(
     private readonly platform: AirthingsWavePlatform,
     private readonly accessory: PlatformAccessory,
@@ -37,10 +38,12 @@ export class AirthingsWaveAccessory {
     this.name_humidity = accessory.context.device.name_humidity || this.name;
     this.refresh = accessory.context.device.refresh || 3600; // Update every hour
     this.address = accessory.context.device.address;
-    this.radonShortTermAverageCharacteristic = createRadonCharacteristics(this.platform.api).RadonShortTermAverage;
-    this.radonLongTermAverageCharacteristic = createRadonCharacteristics(this.platform.api).RadonLongTermAverage;
-    this.vocLevelCharacteristic = createAirQualityCharacteristics(this.platform.api).VOC_Level;
-    this.pressureCharacteristic = createAirQualityCharacteristics(this.platform.api).Pressure;
+    const radonCharacteristics = createRadonCharacteristics(this.platform.api);
+    this.radonShortTermAverageCharacteristic = radonCharacteristics.RadonShortTermAverage;
+    this.radonLongTermAverageCharacteristic = radonCharacteristics.RadonLongTermAverage;
+    const airQualityCharacteristics = createAirQualityCharacteristics(this.platform.api);
+    this.vocLevelCharacteristic = airQualityCharacteristics.VOC_Level;
+    this.pressureCharacteristic = airQualityCharacteristics.Pressure;
     //const { RadonShortTermAverage, RadonLongTermAverage } = createRadonCharacteristics(this.platform.api);
     //const { VOC_Level, Pressure } = createAirQualityCharacteristics(this.platform.api);
     
@@ -128,9 +131,9 @@ export class AirthingsWaveAccessory {
     this.temperatureService
       .setCharacteristic(this.platform.Characteristic.CurrentTemperature, airthingswave.getvalue(waveSensor.temperature));
     this.temperatureService
-      .setCharacteristic(this.radonShortTermAverageCharacteristic, airthingswave.getvalue(waveSensor.radonShortTermAverage));
+      .setCharacteristic(this.radonShortTermAverageCharacteristic.name, airthingswave.getvalue(waveSensor.radonShortTermAverage));
     this.temperatureService
-      .setCharacteristic(this.radonLongTermAverageCharacteristic, airthingswave.getvalue(waveSensor.radonLongTermAverage));
+      .setCharacteristic(this.radonLongTermAverageCharacteristic.name, airthingswave.getvalue(waveSensor.radonLongTermAverage));
 
     if (this.isWavePlus) {
       this.platform.log.info('Pressure: ', airthingswave.getvalue(waveSensor.pressure), airthingswave.getunit(waveSensor.pressure));
@@ -140,9 +143,9 @@ export class AirthingsWaveAccessory {
       this.carbonDioxideService?.setCharacteristic(
         this.platform.Characteristic.CarbonDioxideLevel, airthingswave.getvalue(waveSensor.co2Level));
       this.carbonDioxideService?.setCharacteristic(
-        this.vocLevelCharacteristic, airthingswave.getvalue(waveSensor.vocLevel));
+        this.vocLevelCharacteristic!.name, airthingswave.getvalue(waveSensor.vocLevel));
       this.carbonDioxideService?.setCharacteristic(
-        this.pressureCharacteristic, airthingswave.getvalue(waveSensor.pressure));
+        this.pressureCharacteristic!.name, airthingswave.getvalue(waveSensor.pressure));
     }
   }
 
