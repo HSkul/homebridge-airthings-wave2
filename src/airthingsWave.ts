@@ -89,6 +89,8 @@ export class AirthingsWaveSensor {
       const gattServer = await device.gatt();
     
       // Get the primary service for the device, depending on whether it is a Wave or Wave+
+      this.log.debug('UUID of primary service: ', this.primaryservice_uuid[Number(this.isWavePlus)]);
+
       const service = await gattServer.getPrimaryService(this.primaryservice_uuid[Number(this.isWavePlus)]);
       this.log.info('Connected to device: ', deviceName, ' at address: ', btaddress);
       
@@ -97,7 +99,7 @@ export class AirthingsWaveSensor {
       if (this.isWavePlus) {
         // Read from a Wave+
         this.log.info('Reading from Wave+ device: ', deviceName, ' at address: ', btaddress);
-        const btcharacteristic = await service.getCharacteristic('b42e2fc2-ade7-11e4-89d3-123b93f75cba');
+        const btcharacteristic = await service.getCharacteristic('b42e2a68-ade7-11e4-89d3-123b93f75cba');
         const rawdata = await btcharacteristic.readValue();
 
         if (rawdata.length < 20) {
@@ -199,9 +201,9 @@ export class AirthingsWaveSensor {
         await device.disconnect();
       }
       // Free up DBus network connection
-      destroy();
-      // Wait 10s to ensure everything has disconnected
-      await this.sleep(2000);
+      destroy(); 
+      // Give some time for the device to disconnect before the next read, otherwise it will fail
+      await this.sleep(10000);
     }
   }
 
@@ -220,8 +222,10 @@ export class AirthingsWaveSensor {
     }
     return radon;
   }
+
   // Helper function that returns a Promise
   sleep = (ms: number): Promise<void> => {
     return new Promise((resolve) => setTimeout(resolve, ms));
   };
 }
+
