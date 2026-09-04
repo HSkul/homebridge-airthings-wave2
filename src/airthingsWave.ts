@@ -71,7 +71,7 @@ export class AirthingsWaveSensor {
       
       this.log.debug('Connected to device');
       // Let's ensure we have the right device
-      const deviceName = await device.getName();
+      const deviceName = await device.getAlias();
       const btaddress = await device.getAddress();
       if (this.isWavePlus && deviceName !== 'Airthings Wave+') {
         this.log.error('ERROR: ',btaddress, 'is not a Wave+ device. Found device name: ', deviceName);
