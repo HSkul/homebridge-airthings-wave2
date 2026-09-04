@@ -20,6 +20,7 @@ export function createRadonCharacteristics(api: API): {
         minValue: 0,
         maxValue: 1000,
         minStep: 1,
+        unit: "Bq/m3",
       });
       this.value = this.getDefaultValue();
     }
@@ -34,6 +35,7 @@ export function createRadonCharacteristics(api: API): {
         minValue: 0,
         maxValue: 1000,
         minStep: 1,
+        unit: "Bq/m3",
       });
       this.value = this.getDefaultValue();
     }
@@ -57,6 +59,7 @@ export function createAirQualityCharacteristics(api: API): {
         minValue: 0,
         maxValue: 5000,
         minStep: 1,
+        unit: "ppm",
       });
       this.value = this.getDefaultValue();
     }
@@ -71,6 +74,7 @@ export function createAirQualityCharacteristics(api: API): {
         minValue: 0,
         maxValue: 1200,
         minStep: 1,
+        unit: "hPa",
       });
       this.value = this.getDefaultValue();
     }
