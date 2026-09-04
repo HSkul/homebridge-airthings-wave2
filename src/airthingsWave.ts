@@ -42,10 +42,10 @@ export class AirthingsWaveSensor {
     this.sensor_uuid = new Array(4).fill(null);
     this.sensor_uuid[waveSensor.humidity] = '00002a6f-0000-1000-8000-00805f9b34fb';
     this.sensor_uuid[waveSensor.temperature] = '00002a6e-0000-1000-8000-00805f9b34fb';
-    this.sensor_uuid[waveSensor.radonShortTermAverage] = 'B42E01AA-ADE7-11E4-89D3-123B93F75CBA';
-    this.sensor_uuid[waveSensor.radonLongTermAverage] = 'B42E0A4C-ADE7-11E4-89D3-123B93F75CBA';
+    this.sensor_uuid[waveSensor.radonShortTermAverage] = 'b42e01aa-ade7-11e4-89d3-123b93f75cba';
+    this.sensor_uuid[waveSensor.radonLongTermAverage] = 'b42e0a4c-ade7-11e4-89d3-123b93f75cba';
     // Where sensor data is actually stored
-    this.sensor_data = new Array(this.number_of_sensors).fill(0);
+    this.sensor_data = new Array<number>(this.number_of_sensors).fill(0);
     this.sensor_units = ['%rH', 'degC', 'Bq/m3', 'Bq/m3', 'hPa', 'ppm', 'ppb'];
     this.sensor_version = -1;
     this.log = platform.log;
