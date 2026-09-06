@@ -139,7 +139,7 @@ export class AirthingsWaveSensor {
       //await device.connect();
       //this.log.debug('Connected to device');
       // Let's ensure we have the right device
-      this.deviceName = await this.device?.getAlias();
+      this.deviceName = await this.device?.getAlias() || undefined;
       const btaddress = await this.device?.getAddress();
       // In the future, other wave devices may be added here
       switch (this.deviceName) {
