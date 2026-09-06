@@ -61,11 +61,11 @@ export class AirthingsWaveAccessory {
     
     //this.customCharacteristic = new CustomCharacteristic(this.platform.api);
     //this.devicePolling.bind(this);
-    /*
+    
     // Set accessory information
     this.accessory.getService(this.platform.Service.AccessoryInformation)!
       .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Airthings')
-      .setCharacteristic(this.platform.Characteristic.Model, this.isWavePlus ? 'Wave+' : 'Wave')
+    //  .setCharacteristic(this.platform.Characteristic.Model, this.isWavePlus ? 'Wave+' : 'Wave')
       .setCharacteristic(this.platform.Characteristic.SerialNumber, this.address)
       .setCharacteristic(this.platform.Characteristic.FirmwareRevision, packageJson.version);
 
@@ -91,7 +91,7 @@ export class AirthingsWaveAccessory {
     }
     
     this.platform.log.debug('Finished adding humidity, temperature, and radon');
-    
+    /*
     // If we have Wave+ then we have additional services/characteristics
     if(this.isWavePlus) {
       this.name_CO2 = accessory.context.device.name_CO2 || this.name;
@@ -133,13 +133,13 @@ export class AirthingsWaveAccessory {
     this.isWavePlus = this.airthingswave.wave_type === WaveType.wavePlus;
 
     this.accessory.getService(this.platform.Service.AccessoryInformation)!
-      .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Airthings')
-      .setCharacteristic(this.platform.Characteristic.Model, this.isWavePlus ? 'Wave+' : 'Wave')
-      .setCharacteristic(this.platform.Characteristic.SerialNumber, this.address)
-      .setCharacteristic(this.platform.Characteristic.FirmwareRevision, packageJson.version);
+    //  .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Airthings')
+      .setCharacteristic(this.platform.Characteristic.Model, this.isWavePlus ? 'Wave+' : 'Wave');
+    //  .setCharacteristic(this.platform.Characteristic.SerialNumber, this.address)
+    //  .setCharacteristic(this.platform.Characteristic.FirmwareRevision, packageJson.version);
 
     // Add the sensors, we are skipping this unique identifier, let's see if that is OK
-    this.humidityService = this.accessory.getService(this.name_humidity)
+    /*this.humidityService = this.accessory.getService(this.name_humidity)
       || this.accessory.addService(this.platform.Service.HumiditySensor, this.name_humidity);
 
     this.temperatureService = this.accessory.getService(this.name_temperature)
@@ -160,7 +160,7 @@ export class AirthingsWaveAccessory {
     }
     
     this.platform.log.debug('Finished adding humidity, temperature, and radon');
-    
+    */
     // If we have Wave+ then we have additional services/characteristics
     if(this.isWavePlus) {
       this.name_CO2 = accessory.context.device.name_CO2 || this.name;
