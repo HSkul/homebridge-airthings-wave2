@@ -66,7 +66,7 @@ export class AirthingsWaveSensor {
     //-------------------------------
     this.bluetooth = null;
     this.adapter = null;
-    this.device = undefined;
+    this.device = null;
     this.gattServer = null;
     this.service = null;
     //this.btcharacteristic = null;
