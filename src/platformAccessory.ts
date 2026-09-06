@@ -47,7 +47,9 @@ export class AirthingsWaveAccessory {
     this.pressureCharacteristic = airQualityCharacteristics.Pressure;
 
     this.airthingswave = new AirthingsWaveSensor(this.platform, this.address);
-    this.airthingswave.readWaveInfo();
+    this.airthingswave.connectWave();
+    this.airthingswave.readWaveInfo()
+    this.airthingswave.disconnectWave();
     this.isWavePlus = this.airthingswave.wave_type === WaveType.wavePlus;
 
 
@@ -55,7 +57,7 @@ export class AirthingsWaveAccessory {
     //const { VOC_Level, Pressure } = createAirQualityCharacteristics(this.platform.api);
     
     //this.customCharacteristic = new CustomCharacteristic(this.platform.api);
-    this.devicePolling.bind(this);
+    //this.devicePolling.bind(this);
 
     // Set accessory information
     this.accessory.getService(this.platform.Service.AccessoryInformation)!
@@ -126,7 +128,9 @@ export class AirthingsWaveAccessory {
     this.platform.log.debug('Wave+ device: ', this.isWavePlus);
     this.platform.log.debug('Refresh interval: ', this.refresh, ' seconds');
 
+    await this.airthingswave.connectWave();
     await this.airthingswave.readWaveData();
+    await this.airthingswave.disconnectWave();
 
     this.platform.log
       .info('Humidity: ', this.airthingswave.getvalue(WaveSensor.humidity), this.airthingswave.getunit(WaveSensor.humidity));

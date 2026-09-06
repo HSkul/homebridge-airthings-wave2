@@ -90,7 +90,7 @@ export class AirthingsWaveSensor {
   // There is just a single readWave() function that connects and reads dataand inside it
   // we will check if it is a wave or wave+ and then read the appropriate characteristics
 
-  async connecToWave() {
+  async connectWave() {
     const { bluetooth, destroy } = createBluetooth();
     this.bluetooth = bluetooth;
     try {
@@ -344,6 +344,14 @@ export class AirthingsWaveSensor {
       // Give some time for the device to disconnect before the next read, otherwise it will fail
       //await this.sleep(10000);
     }
+  }
+
+  async disconnectWave() {
+    const { destroy } = createBluetooth();
+    if (this.device && await this.device.isConnected()) {
+      await this.device.disconnect();
+    }
+    destroy();
   }
 
   getvalue(sensor_index: number): number {
