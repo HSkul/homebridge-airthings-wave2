@@ -66,7 +66,7 @@ export class AirthingsWaveSensor {
     //-------------------------------
     this.bluetooth = null;
     this.adapter = null;
-    this.device = null;
+    this.device = undefined;
     this.gattServer = null;
     this.service = null;
     //this.btcharacteristic = null;
@@ -97,7 +97,7 @@ export class AirthingsWaveSensor {
       }
       this.device = await this.adapter.waitDevice(this.macaddr);  
       // Wait for the device to be connected
-      await this.device.connect();
+      await this.device?.connect();
       this.log.debug('Connected to device');
     } catch (error: unknown) {
       // Generic BLE error
@@ -139,8 +139,8 @@ export class AirthingsWaveSensor {
       //await device.connect();
       //this.log.debug('Connected to device');
       // Let's ensure we have the right device
-      this.deviceName = await this.device.getAlias();
-      const btaddress = await this.device.getAddress();
+      this.deviceName = await this.device?.getAlias();
+      const btaddress = await this.device?.getAddress();
       // In the future, other wave devices may be added here
       switch (this.deviceName) {
       case 'Airthings Wave+':
@@ -220,7 +220,7 @@ export class AirthingsWaveSensor {
       //}
 
       // Get the generic attribute profile server for the device
-      this.gattServer = await this.device.gatt();
+      this.gattServer = await this.device?.gatt();
     
       // Get the primary service for the device, depending on whether it is a Wave or Wave+
       this.log.debug('UUID of this Wave primary service: ', this.primaryservice_uuid[this.wave_type]);
