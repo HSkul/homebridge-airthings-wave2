@@ -22,7 +22,7 @@ export enum WaveType {
 export class AirthingsWaveSensor {
   public log: Logging;
   private macaddr: string;                // MAC address of the Wave
-  private deviceName: string;             // Name of the device
+  private deviceName: string | undefined;// Name of the device
   public wave_type: number;              // Version of the Wave
   //private number_of_sensors: number;      // Number of sensors in the Wave (4 for Wave, 7 for Wave+)
   private sensor_data: number[];          // Array to hold the sensor data 
@@ -139,7 +139,7 @@ export class AirthingsWaveSensor {
       //await device.connect();
       //this.log.debug('Connected to device');
       // Let's ensure we have the right device
-      this.deviceName = await this.device?.getAlias() || undefined;
+      this.deviceName = await this.device?.getAlias();
       const btaddress = await this.device?.getAddress();
       // In the future, other wave devices may be added here
       switch (this.deviceName) {
