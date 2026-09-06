@@ -31,7 +31,13 @@ export class AirthingsWaveSensor {
   private primaryservice_uuid: string[];  // Array to hold the primary service UUIDs for Wave and Wave+
   // 0: Wave, 1: Wave+
   // Use as: primaryservice_uuid[this.wave_type]
-  
+  private bluetooth: any;                   // Bluetooth adapter instance
+  private adapter: any;                     // Bluetooth adapter instance
+  private device: Device | undefined;       // Bluetooth device instance
+  private gattServer: any;                  // GATT server instance
+  private service: any;                     // GATT service instance
+  //private btcharacteristic: any;            // Bluetooth characteristic instance
+
 
   constructor(
     private readonly platform: AirthingsWavePlatform,
@@ -57,6 +63,14 @@ export class AirthingsWaveSensor {
     this.wave_type = WaveType.none;
     // wave_type is WaveType.wave for the original Wave, WaveType.wavePlus for Wave+, and WaveType.none for unknown
     // Other Wave types will have 2, 3, etc.  But we will only support Wave and Wave+ for now
+    //-------------------------------
+    this.bluetooth = null;
+    this.adapter = null;
+    this.device = undefined;
+    this.gattServer = null;
+    this.service = null;
+    //this.btcharacteristic = null;
+    
     this.log = platform.log;
     // Should connect to Wave here and determine the type, version, number of sensors, and name of device
     // This should be done in a separate function that is called from the constructor, and should be async, 
@@ -72,41 +86,78 @@ export class AirthingsWaveSensor {
   // There is just a single readWave() function that connects and reads dataand inside it
   // we will check if it is a wave or wave+ and then read the appropriate characteristics
 
+  async connecToWave() {
+    const { bluetooth, destroy } = createBluetooth();
+    this.bluetooth = bluetooth;
+    try {
+      this.adapter = await this.bluetooth.defaultAdapter();
+      // Start discovery of bluetooth devices
+      if (! await this.adapter.isDiscovering()) {
+        await this.adapter.startDiscovery();
+      }
+      this.device = await this.adapter.waitDevice(this.macaddr);  
+      // Wait for the device to be connected
+      await this.device.connect();
+      this.log.debug('Connected to device');
+    } catch (error: unknown) {
+      // Generic BLE error
+      if (error instanceof Error) {
+        this.log.error(`BLE Operation Failed: ${error.message}`);
+        // Timeout probably means it didn't find the device
+        if (error.message.includes('timed out')) {
+          this.log.error('Did not find device at address: ', this.macaddr);
+          // Handle other BlueZ rejections
+        } else if (error.message.includes('bluez')) {
+          this.log.error('Is bluetooth setup properly?');
+        } else {
+          this.log.error('An unexpected error occurred:', error);
+        }
+      }
+      if (this.device && await this.device.isConnected()) {
+        await this.device.disconnect();
+      }
+      // Free up DBus network connection
+      destroy();
+    }
+  }
+
   async readWaveInfo() {
     const { bluetooth, destroy } = createBluetooth();
-    let device: Device | undefined = undefined;
+    //this.bluetooth = bluetooth;
+    //let device: Device | undefined = undefined;
     // Use a try-catch block to handle errors during the BLE operations
     try {
-      const adapter = await bluetooth.defaultAdapter();
+      //const adapter = await bluetooth.defaultAdapter();
+      //this.adapter = await this.bluetooth.defaultAdapter();
       // Start discovery of bluetooth devices
-      if (! await adapter.isDiscovering()) {
-        await adapter.startDiscovery();
-      }
+      //if (! await this.adapter.isDiscovering()) {
+      //  await this.adapter.startDiscovery();
+      //}
       // Wait for the device to be discovered
-      device = await adapter.waitDevice(this.macaddr);  
+      //device = await adapter.waitDevice(this.macaddr);  
       // Wait for the device to be connected
-      await device.connect();
-      this.log.debug('Connected to device');
+      //await device.connect();
+      //this.log.debug('Connected to device');
       // Let's ensure we have the right device
-      this.deviceName = await device.getAlias();
-      const btaddress = await device.getAddress();
+      this.deviceName = await this.device.getAlias();
+      const btaddress = await this.device.getAddress();
       // In the future, other wave devices may be added here
       switch (this.deviceName) {
-        case 'Airthings Wave+':
-          this.wave_type = WaveType.wavePlus;
-          //this.number_of_sensors = 7;
-          this.log.debug('Found Wave+ device: ', btaddress, ' with name: ', this.deviceName);
-          break;
-        case 'AT#129408-2900Radon':
-          this.wave_type = WaveType.wave;
-          //this.number_of_sensors = 4;
-          this.log.debug('Found Wave device: ', btaddress, ' with name: ', this.deviceName);
-          break;
-        default:
-          this.wave_type = WaveType.none;
-          //this.number_of_sensors = 0;
-          this.log.error('ERROR: ',btaddress, 'is not a Wave or Wave+ device. Found device name: ', this.deviceName);
-          break;
+      case 'Airthings Wave+':
+        this.wave_type = WaveType.wavePlus;
+        //this.number_of_sensors = 7;
+        this.log.debug('Found Wave+ device: ', btaddress, ' with name: ', this.deviceName);
+        break;
+      case 'AT#129408-2900Radon':
+        this.wave_type = WaveType.wave;
+        //this.number_of_sensors = 4;
+        this.log.debug('Found Wave device: ', btaddress, ' with name: ', this.deviceName);
+        break;
+      default:
+        this.wave_type = WaveType.none;
+        //this.number_of_sensors = 0;
+        this.log.error('ERROR: ',btaddress, 'is not a Wave or Wave+ device. Found device name: ', this.deviceName);
+        break;
       }
     } catch (error: unknown) {
       // Generic BLE error
@@ -122,19 +173,17 @@ export class AirthingsWaveSensor {
           this.log.error('An unexpected error occurred:', error);
         }
       }
-    } finally {
-      // Clean up connections and DBus paths
-      if (device && await device.isConnected()) {
-        await device.disconnect();
+      if (this.device && await this.device.isConnected()) {
+        await this.device.disconnect();
       }
       // Free up DBus network connection
-      destroy();  
-    }
+      destroy(); 
+    } 
   }
   // This should only read the sensor data and update the sensor_data array, but not read the device info
   async readWaveData() {
     const { bluetooth, destroy } = createBluetooth();
-    let device: Device | undefined = undefined;
+    //let device: Device | undefined = undefined;
 
     // Let's make sure we found a wave device before we try to read data from it
     if (this.wave_type === WaveType.none) {
@@ -144,17 +193,17 @@ export class AirthingsWaveSensor {
 
     // Use a try-catch block to handle errors during the BLE operations
     try {
-      const adapter = await bluetooth.defaultAdapter();
+      //const adapter = await bluetooth.defaultAdapter();
       // Start discovery of bluetooth devices
-      if (! await adapter.isDiscovering()) {
-        await adapter.startDiscovery();
-      }
+      //if (! await adapter.isDiscovering()) {
+      //  await adapter.startDiscovery();
+      //}
       // Wait for the device to be discovered
-      device = await adapter.waitDevice(this.macaddr);  
+      //device = await adapter.waitDevice(this.macaddr);  
       // Wait for the device to be connected
-      await device.connect();
+      //await device.connect();
       
-      this.log.debug('Connected to device: ', this.deviceName, ' at address: ', this.macaddr);
+      this.log.debug('Reading data from device: ', this.deviceName, ' at address: ', this.macaddr);
       // Let's ensure we have the right device
       //const deviceName = await device.getAlias();
       //const btaddress = await device.getAddress();
@@ -171,12 +220,12 @@ export class AirthingsWaveSensor {
       //}
 
       // Get the generic attribute profile server for the device
-      const gattServer = await device.gatt();
+      this.gattServer = await this.device.gatt();
     
       // Get the primary service for the device, depending on whether it is a Wave or Wave+
       this.log.debug('UUID of this Wave primary service: ', this.primaryservice_uuid[this.wave_type]);
 
-      const service = await gattServer.getPrimaryService(this.primaryservice_uuid[this.wave_type]);
+      this.service = await this.gattServer.getPrimaryService(this.primaryservice_uuid[this.wave_type]);
       //this.log.info('Connected to device: ', deviceName, ' at address: ', btaddress);
       
       // Now the code depends on the type of wave, since Wave+ reads all values in one read, 
@@ -185,7 +234,7 @@ export class AirthingsWaveSensor {
       if (this.wave_type === WaveType.wavePlus) {
         // Read from a Wave+
         this.log.debug('Reading from Wave+ device: ', this.deviceName, ' at address: ', this.macaddr);
-        const btcharacteristic = await service.getCharacteristic('b42e2a68-ade7-11e4-89d3-123b93f75cba');
+        const btcharacteristic = await this.service.getCharacteristic('b42e2a68-ade7-11e4-89d3-123b93f75cba');
         const rawdata = await btcharacteristic.readValue();
 
         if (rawdata.length < 20) {
@@ -230,25 +279,25 @@ export class AirthingsWaveSensor {
         // Read from a Wave
         this.log.debug('Reading from Wave device: ', this.deviceName, ' at address: ', this.macaddr);
         // Temperature from Wave
-        let btcharacteristic = await service.getCharacteristic(this.sensor_uuid[WaveSensor.temperature]);
+        let btcharacteristic = await this.service.getCharacteristic(this.sensor_uuid[WaveSensor.temperature]);
         let rawdata = await btcharacteristic.readValue();
         let rawValue = rawdata.readUInt16LE();
         this.sensor_data[WaveSensor.temperature] = rawValue / 100.0;
 
         // Humidity from Wave
-        btcharacteristic = await service.getCharacteristic(this.sensor_uuid[WaveSensor.humidity]);
+        btcharacteristic = await this.service.getCharacteristic(this.sensor_uuid[WaveSensor.humidity]);
         rawdata = await btcharacteristic.readValue();
         rawValue = rawdata.readUInt16LE();
         this.sensor_data[WaveSensor.humidity] = rawValue / 100.0;
   
         // Radon short term average from Wave
-        btcharacteristic = await service.getCharacteristic(this.sensor_uuid[WaveSensor.radonShortTermAverage]);
+        btcharacteristic = await this.service.getCharacteristic(this.sensor_uuid[WaveSensor.radonShortTermAverage]);
         rawdata = await btcharacteristic.readValue();
         rawValue = rawdata.readUInt16LE();
         this.sensor_data[WaveSensor.radonShortTermAverage] = this.conv2radon(rawValue);
 
         // Radon long term average from Wave
-        btcharacteristic = await service.getCharacteristic(this.sensor_uuid[WaveSensor.radonLongTermAverage]);
+        btcharacteristic = await this.service.getCharacteristic(this.sensor_uuid[WaveSensor.radonLongTermAverage]);
         rawdata = await btcharacteristic.readValue();
         rawValue = rawdata.readUInt16LE();
         this.sensor_data[WaveSensor.radonLongTermAverage] = this.conv2radon(rawValue);
@@ -281,13 +330,13 @@ export class AirthingsWaveSensor {
       }
     } finally {
       // Clean up connections and DBus paths
-      if (device && await device.isConnected()) {
-        await device.disconnect();
+      if (this.device && await this.device.isConnected()) {
+        await this.device.disconnect();
       }
       // Free up DBus network connection
       destroy(); 
       // Give some time for the device to disconnect before the next read, otherwise it will fail
-      await this.sleep(10000);
+      //await this.sleep(10000);
     }
   }
 
