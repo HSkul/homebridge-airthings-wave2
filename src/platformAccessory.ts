@@ -48,7 +48,7 @@ export class AirthingsWaveAccessory {
 
     this.airthingswave = new AirthingsWaveSensor(this.platform, this.address);
     this.airthingswave.connectWave();
-    this.airthingswave.readWaveInfo()
+    this.airthingswave.readWaveInfo();
     this.airthingswave.disconnectWave();
     this.isWavePlus = this.airthingswave.wave_type === WaveType.wavePlus;
 
