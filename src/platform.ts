@@ -57,7 +57,7 @@ export class AirthingsWavePlatform implements DynamicPlatformPlugin {
    */
   // We shouldn't really need this
   
-  discoverDevices() {
+  async discoverDevices() {
     this.log.debug('Discovering devices...');
     // Loop over the discovered devices and register each one if it has not already been registered
     // We need to loop through the devices listed in the config.json
@@ -81,8 +81,8 @@ export class AirthingsWavePlatform implements DynamicPlatformPlugin {
 
         // create the accessory handler for the restored accessory
         // this is imported from `platformAccessory.ts`
-        new AirthingsWaveAccessory(this, existingAccessory);
-
+        const awa = new AirthingsWaveAccessory(this, existingAccessory);
+        await awa.init(existingAccessory);
         // it is possible to remove platform accessories at any time using `api.unregisterPlatformAccessories`, e.g.:
         // remove platform accessories when no longer present
         // this.api.unregisterPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [existingAccessory]);
@@ -102,7 +102,9 @@ export class AirthingsWavePlatform implements DynamicPlatformPlugin {
         // create the accessory handler for the newly create accessory
         // this is imported from `platformAccessory.ts`
         // The details information comes inside accessory.context.device
-        new AirthingsWaveAccessory(this, accessory);
+        const awa = new AirthingsWaveAccessory(this, accessory);
+        await awa.init(accessory);
+        
 
         // link the accessory to your platform
         this.api.registerPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [accessory]);

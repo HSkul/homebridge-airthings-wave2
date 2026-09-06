@@ -90,7 +90,8 @@ export class AirthingsWaveSensor {
   // There is just a single readWave() function that connects and reads dataand inside it
   // we will check if it is a wave or wave+ and then read the appropriate characteristics
 
-  async connectWave() {
+  
+  async connectWave(): Promise<boolean> {
     const { bluetooth, destroy } = createBluetooth();
     this.bluetooth = bluetooth;
     try {
@@ -103,6 +104,7 @@ export class AirthingsWaveSensor {
       // Wait for the device to be connected
       await this.device?.connect();
       this.log.debug('Connected to device');
+      return true;
     } catch (error: unknown) {
       // Generic BLE error
       if (error instanceof Error) {
@@ -122,6 +124,7 @@ export class AirthingsWaveSensor {
       }
       // Free up DBus network connection
       destroy();
+      return false;
     }
   }
 
@@ -131,6 +134,7 @@ export class AirthingsWaveSensor {
     //this.bluetooth = bluetooth;
     //let device: Device | undefined = undefined;
     // Use a try-catch block to handle errors during the BLE operations
+    this.log.debug('Reading device info from device at address: ', this.macaddr);
     try {
       //const adapter = await bluetooth.defaultAdapter();
       //this.adapter = await this.bluetooth.defaultAdapter();
@@ -183,6 +187,7 @@ export class AirthingsWaveSensor {
       }
       // Free up DBus network connection
       destroy(); 
+    this.log.debug('Finished reading device info from device at address: ', this.macaddr);
     } 
   }
   // This should only read the sensor data and update the sensor_data array, but not read the device info
@@ -342,7 +347,7 @@ export class AirthingsWaveSensor {
       // Free up DBus network connection
       destroy(); 
       // Give some time for the device to disconnect before the next read, otherwise it will fail
-      //await this.sleep(10000);
+      await this.sleep(10000);
     }
   }
 

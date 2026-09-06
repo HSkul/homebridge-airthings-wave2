@@ -25,7 +25,7 @@ export class AirthingsWaveAccessory {
   private temperatureService: Service;
   private humidityService: Service;
   private carbonDioxideService?: Service;
-  private airthingswave: AirthingsWaveSensor;
+  private airthingswave!: AirthingsWaveSensor;
 
   // The device information from the config file comes in with the accessory.context.devices
   constructor(
@@ -45,12 +45,15 @@ export class AirthingsWaveAccessory {
     const airQualityCharacteristics = createAirQualityCharacteristics(this.platform.api);
     this.vocLevelCharacteristic = airQualityCharacteristics.VOC_Level;
     this.pressureCharacteristic = airQualityCharacteristics.Pressure;
+    this.isWavePlus = false; // We will determine this later when we read the device info
+    //this.airthingswave = null;
 
-    this.airthingswave = new AirthingsWaveSensor(this.platform, this.address);
-    this.airthingswave.connectWave();
-    this.airthingswave.readWaveInfo();
-    this.airthingswave.disconnectWave();
-    this.isWavePlus = this.airthingswave.wave_type === WaveType.wavePlus;
+    //this.airthingswave = new AirthingsWaveSensor(this.platform, this.address);
+    //if (this.airthingswave.connectWave()) {
+    //  this.airthingswave.readWaveInfo();
+    //  this.airthingswave.disconnectWave();
+    //}
+    //this.isWavePlus = this.airthingswave.wave_type === WaveType.wavePlus;
 
 
     //const { RadonShortTermAverage, RadonLongTermAverage } = createRadonCharacteristics(this.platform.api);
@@ -58,7 +61,7 @@ export class AirthingsWaveAccessory {
     
     //this.customCharacteristic = new CustomCharacteristic(this.platform.api);
     //this.devicePolling.bind(this);
-
+    /*
     // Set accessory information
     this.accessory.getService(this.platform.Service.AccessoryInformation)!
       .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Airthings')
@@ -117,6 +120,76 @@ export class AirthingsWaveAccessory {
     this.devicePolling();
     // Now setup the interval polling
     setInterval(this.devicePolling.bind(this), this.refresh * 1000);
+    */
+  }
+
+  public async init( accessory: PlatformAccessory ): Promise<void> {
+    
+    this.airthingswave = new AirthingsWaveSensor(this.platform, this.address);
+    if (await this.airthingswave.connectWave()) {
+      await this.airthingswave.readWaveInfo();
+      await this.airthingswave.disconnectWave();
+    }
+    this.isWavePlus = this.airthingswave.wave_type === WaveType.wavePlus;
+
+    this.accessory.getService(this.platform.Service.AccessoryInformation)!
+      .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Airthings')
+      .setCharacteristic(this.platform.Characteristic.Model, this.isWavePlus ? 'Wave+' : 'Wave')
+      .setCharacteristic(this.platform.Characteristic.SerialNumber, this.address)
+      .setCharacteristic(this.platform.Characteristic.FirmwareRevision, packageJson.version);
+
+    // Add the sensors, we are skipping this unique identifier, let's see if that is OK
+    this.humidityService = this.accessory.getService(this.name_humidity)
+      || this.accessory.addService(this.platform.Service.HumiditySensor, this.name_humidity);
+
+    this.temperatureService = this.accessory.getService(this.name_temperature)
+      || this.accessory.addService(this.platform.Service.TemperatureSensor, this.name_temperature);
+    
+    const RDSTA = this.radonShortTermAverageCharacteristic.name;
+    const RDLTA = this.radonLongTermAverageCharacteristic.name;
+    this.platform.log.debug('RDSTA is: ',RDSTA);
+    this.platform.log.debug('testCharactersitic(RDLTA) is: ',this.temperatureService.testCharacteristic(RDLTA));
+    this.platform.log.debug('RDLTA is: ',RDLTA);
+    this.platform.log.debug('testCharactersitic(RDSTA) is: ',this.temperatureService.testCharacteristic(RDSTA));
+    
+    if (!this.temperatureService.testCharacteristic(RDSTA)) {
+      this.temperatureService.addCharacteristic(this.radonShortTermAverageCharacteristic);
+    }
+    if (!this.temperatureService.testCharacteristic(RDLTA)) {
+      this.temperatureService.addCharacteristic(this.radonLongTermAverageCharacteristic);
+    }
+    
+    this.platform.log.debug('Finished adding humidity, temperature, and radon');
+    
+    // If we have Wave+ then we have additional services/characteristics
+    if(this.isWavePlus) {
+      this.name_CO2 = accessory.context.device.name_CO2 || this.name;
+      this.carbonDioxideService = this.accessory.getService(this.name_CO2!)
+      || this.accessory.addService(this.platform.Service.CarbonDioxideSensor, this.name_CO2);
+      this.carbonDioxideService
+        .getCharacteristic(this.platform.Characteristic.CarbonDioxideLevel)
+        .setProps({
+          minValue: 0,
+          maxValue: 5000,
+          minStep: 1,
+        });
+      const VOCL = this.vocLevelCharacteristic.name;
+      const PR = this.pressureCharacteristic.name;
+
+      if(!this.carbonDioxideService.testCharacteristic(VOCL)) {
+        this.carbonDioxideService.addCharacteristic(this.vocLevelCharacteristic, this.name_CO2);
+      }
+      if(!this.carbonDioxideService.testCharacteristic(PR)) {
+        this.carbonDioxideService.addCharacteristic(this.pressureCharacteristic, this.name_CO2);
+      }
+      this.platform.log.debug('Finished adding CO2, VOC, and pressure');
+    }
+
+    // Get the initial value of the sensors so we don't have to wait the first interval
+    this.devicePolling();
+    // Now setup the interval polling
+    setInterval(this.devicePolling.bind(this), this.refresh * 1000);
+    
   }
 
   async devicePolling() {

@@ -59,7 +59,7 @@ export function createAirQualityCharacteristics(api: API): {
         minValue: 0,
         maxValue: 5000,
         minStep: 1,
-        unit: 'ppm',
+        unit: 'ppb',
       });
       this.value = this.getDefaultValue();
     }
