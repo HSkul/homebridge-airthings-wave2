@@ -126,7 +126,8 @@ export class AirthingsWaveSensor {
   }
 
   async readWaveInfo() {
-    const { bluetooth, destroy } = createBluetooth();
+    //const { bluetooth, destroy } = createBluetooth();
+    const { destroy } = createBluetooth();
     //this.bluetooth = bluetooth;
     //let device: Device | undefined = undefined;
     // Use a try-catch block to handle errors during the BLE operations
@@ -186,7 +187,8 @@ export class AirthingsWaveSensor {
   }
   // This should only read the sensor data and update the sensor_data array, but not read the device info
   async readWaveData() {
-    const { bluetooth, destroy } = createBluetooth();
+    //const { bluetooth, destroy } = createBluetooth();
+    const { destroy } = createBluetooth();
     //let device: Device | undefined = undefined;
 
     // Let's make sure we found a wave device before we try to read data from it
