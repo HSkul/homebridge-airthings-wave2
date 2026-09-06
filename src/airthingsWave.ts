@@ -31,11 +31,15 @@ export class AirthingsWaveSensor {
   private primaryservice_uuid: string[];  // Array to hold the primary service UUIDs for Wave and Wave+
   // 0: Wave, 1: Wave+
   // Use as: primaryservice_uuid[this.wave_type]
-  private bluetooth: unknown;                   // Bluetooth adapter instance
-  private adapter: unknown;                     // Bluetooth adapter instance
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private bluetooth: any;                   // Bluetooth adapter instance
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private adapter: any;                     // Bluetooth adapter instance
   private device: Device | undefined;       // Bluetooth device instance
-  private gattServer: unknown;                  // GATT server instance
-  private service: unknown;                     // GATT service instance
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private gattServer: any;                  // GATT server instance
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private service: any;                     // GATT service instance
   //private btcharacteristic: any;            // Bluetooth characteristic instance
 
 
