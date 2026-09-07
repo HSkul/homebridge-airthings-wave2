@@ -1,4 +1,4 @@
-import { type PlatformAccessory, type Service } from 'homebridge';
+import { type PlatformAccessory, type Service, Characteristic } from 'homebridge';
 import type { AirthingsWavePlatform } from './platform.js';
 import packageJson from '../package.json' with { type: 'json' };
 import { AirthingsWaveSensor, WaveSensor, WaveType } from './airthingsWave.ts';
@@ -20,8 +20,8 @@ export class AirthingsWaveAccessory {
   //private radonCharacteristics: Characterstic[];
   private radonShortTermAverageCharacteristic;
   private radonLongTermAverageCharacteristic;
-  private vocLevelCharacteristic?;
-  private pressureCharacteristic?;
+  private vocLevelCharacteristic?: Characteristic;
+  private pressureCharacteristic?: Characteristic;
   private temperatureService: Service;
   private humidityService: Service;
   private carbonDioxideService?: Service;
@@ -42,9 +42,11 @@ export class AirthingsWaveAccessory {
     const radonCharacteristics = createRadonCharacteristics(this.platform.api);
     this.radonShortTermAverageCharacteristic = radonCharacteristics.RadonShortTermAverage;
     this.radonLongTermAverageCharacteristic = radonCharacteristics.RadonLongTermAverage;
-    const airQualityCharacteristics = createAirQualityCharacteristics(this.platform.api);
-    this.vocLevelCharacteristic = airQualityCharacteristics.VOC_Level;
-    this.pressureCharacteristic = airQualityCharacteristics.Pressure;
+    //const airQualityCharacteristics = createAirQualityCharacteristics(this.platform.api);
+    this.vocLevelCharacteristic = undefined; //airQualityCharacteristics.VOC_Level;
+    this.pressureCharacteristic = undefined; //airQualityCharacteristics.Pressure;
+    //this.vocLevelCharacteristic = airQualityCharacteristics.VOC_Level;
+    //this.pressureCharacteristic = airQualityCharacteristics.Pressure;
     this.isWavePlus = false; // We will determine this later when we read the device info
     //this.airthingswave = null;
 
@@ -173,8 +175,11 @@ export class AirthingsWaveAccessory {
           maxValue: 5000,
           minStep: 1,
         });
-      const VOCL = this.vocLevelCharacteristic?.name;
-      const PR = this.pressureCharacteristic?.name;
+      const airQualityCharacteristics = createAirQualityCharacteristics(this.platform.api);
+      this.vocLevelCharacteristic = airQualityCharacteristics.VOC_Level;
+      this.pressureCharacteristic = airQualityCharacteristics.Pressure;
+      const VOCL = this.vocLevelCharacteristic.name;
+      const PR = this.pressureCharacteristic.name;
 
       if(!this.carbonDioxideService.testCharacteristic(VOCL)) {
         this.carbonDioxideService.addCharacteristic(this.vocLevelCharacteristic, this.name_CO2);
