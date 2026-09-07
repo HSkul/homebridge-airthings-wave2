@@ -173,8 +173,8 @@ export class AirthingsWaveAccessory {
           maxValue: 5000,
           minStep: 1,
         });
-      const VOCL = this.vocLevelCharacteristic.name;
-      const PR = this.pressureCharacteristic.name;
+      const VOCL = this.vocLevelCharacteristic?.name;
+      const PR = this.pressureCharacteristic?.name;
 
       if(!this.carbonDioxideService.testCharacteristic(VOCL)) {
         this.carbonDioxideService.addCharacteristic(this.vocLevelCharacteristic, this.name_CO2);
