@@ -33,9 +33,9 @@ export class AirthingsWaveAccessory {
   private address: string;
   private radonShortTermAverageCharacteristic: ReturnType<typeof createRadonSTACharacteristics>;
   private radonLongTermAverageCharacteristic: ReturnType<typeof createRadonLTACharacteristics>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  
   private vocLevelCharacteristic?: ReturnType<typeof createVOCCharacteristics>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  
   private pressureCharacteristic?: ReturnType<typeof createPressureCharacteristics>;
   private temperatureService: Service;
   private humidityService: Service;
