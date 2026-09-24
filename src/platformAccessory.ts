@@ -1,18 +1,20 @@
-import { type PlatformAccessory, type Service, type Characteristic } from 'homebridge';
+import { type PlatformAccessory, type Service } from 'homebridge';
 import type { AirthingsWavePlatform } from './platform.js';
 import packageJson from '../package.json' with { type: 'json' };
 import { AirthingsWaveSensor, WaveSensor, WaveType } from './airthingsWave.ts';
-import { createRadonCharacteristics, createAirQualityCharacteristics } from './customCharacteristics.js';
+//import { createRadonCharacteristics, createAirQualityCharacteristics } from './customCharacteristics.js';
+//import { RadonLongTermAverage, RadonShortTermAverage, VOC_Level, Pressure } from './customCharacteristics.js';
+import { createRadonLTACharacteristics, createRadonSTACharacteristics, createVOCCharacteristics, createPressureCharacteristics } from './customCharacteristics.js';
 
-interface RadonCharacteristics {
-  RadonShortTermAverage: Characteristic;
-  RadonLongTermAverage: Characteristic;
-}
+//interface RadonCharacteristics {
+//  RadonShortTermAverage: Characteristic;
+//  RadonLongTermAverage: Characteristic;
+//}
 
-interface AirQualityCharacteristics {
-  VOC_Level: Characteristic;
-  Pressure: Characteristic;
-}
+//interface AirQualityCharacteristics {
+//  VOC_Level: Characteristic;
+//  Pressure: Characteristic;
+//}
 
 /**
  * Platform Accessory
@@ -26,14 +28,14 @@ export class AirthingsWaveAccessory {
   private name_humidity: string;
   private name_CO2?: string = '';
   private refresh: number;
-  private address: string;
   //private radonCharacteristics: Characterstic[];
-  private radonShortTermAverageCharacteristic: Characteristic;
-  private radonLongTermAverageCharacteristic: Characteristic;
+  private address: string;
+  private radonShortTermAverageCharacteristic: ReturnType<typeof createRadonSTACharacteristics>;
+  private radonLongTermAverageCharacteristic: ReturnType<typeof createRadonLTACharacteristics>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private vocLevelCharacteristic?: Characteristic;
+  private vocLevelCharacteristic?: ReturnType<typeof createVOCCharacteristics>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private pressureCharacteristic?: Characteristic;
+  private pressureCharacteristic?: ReturnType<typeof createPressureCharacteristics>;
   private temperatureService: Service;
   private humidityService: Service;
   private carbonDioxideService?: Service;
@@ -51,9 +53,9 @@ export class AirthingsWaveAccessory {
     this.name_humidity = accessory.context.device.name_humidity || this.name;
     this.refresh = accessory.context.device.refresh || 3600; // Update every hour
     this.address = accessory.context.device.address;
-    const radonCharacteristics: RadonCharacteristics = createRadonCharacteristics(this.platform.api);
-    this.radonShortTermAverageCharacteristic = radonCharacteristics.RadonShortTermAverage;
-    this.radonLongTermAverageCharacteristic = radonCharacteristics.RadonLongTermAverage;
+    //let radonCharacteristics: RadonCharacteristics = createRadonCharacteristics(this.platform.api);
+    this.radonShortTermAverageCharacteristic = createRadonSTACharacteristics(this.platform.api);
+    this.radonLongTermAverageCharacteristic = createRadonLTACharacteristics(this.platform.api);
     //const airQualityCharacteristics = createAirQualityCharacteristics(this.platform.api);
     this.vocLevelCharacteristic = undefined; //airQualityCharacteristics.VOC_Level;
     this.pressureCharacteristic = undefined; //airQualityCharacteristics.Pressure;
@@ -187,9 +189,9 @@ export class AirthingsWaveAccessory {
           maxValue: 5000,
           minStep: 1,
         });
-      const airQualityCharacteristics: AirQualityCharacteristics = createAirQualityCharacteristics(this.platform.api);
-      this.vocLevelCharacteristic = airQualityCharacteristics.VOC_Level;
-      this.pressureCharacteristic = airQualityCharacteristics.Pressure;
+      //const airQualityCharacteristics: AirQualityCharacteristics = createAirQualityCharacteristics(this.platform.api);
+      this.vocLevelCharacteristic = createVOCCharacteristics(this.platform.api);
+      this.pressureCharacteristic = createPressureCharacteristics(this.platform.api);
       const VOCL = this.vocLevelCharacteristic.name;
       const PR = this.pressureCharacteristic.name;
 
