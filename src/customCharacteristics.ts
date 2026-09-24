@@ -25,7 +25,7 @@ export function createRadonLTACharacteristics(api: API): typeof Characteristic {
       });
       this.value = this.getDefaultValue();
     }
-  }
+  };
 }
 
 export function createRadonSTACharacteristics(api: API): typeof Characteristic {
@@ -42,7 +42,7 @@ export function createRadonSTACharacteristics(api: API): typeof Characteristic {
       });
       this.value = this.getDefaultValue();
     }
-  }
+  };
 }
 
 export function createVOCCharacteristics(api: API): typeof Characteristic {
@@ -59,7 +59,7 @@ export function createVOCCharacteristics(api: API): typeof Characteristic {
       });
       this.value = this.getDefaultValue();
     }
-  }
+  };
 }
 
 export function createPressureCharacteristics(api: API): typeof Characteristic {
@@ -76,7 +76,7 @@ export function createPressureCharacteristics(api: API): typeof Characteristic {
       });
       this.value = this.getDefaultValue();
     }
-  }
+  };
 }
 
 /*

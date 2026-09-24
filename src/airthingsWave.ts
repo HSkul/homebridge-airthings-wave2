@@ -187,7 +187,7 @@ export class AirthingsWaveSensor {
       }
       // Free up DBus network connection
       destroy(); 
-    this.log.debug('Finished reading device info from device at address: ', this.macaddr);
+      this.log.debug('Finished reading device info from device at address: ', this.macaddr);
     } 
   }
   // This should only read the sensor data and update the sensor_data array, but not read the device info
