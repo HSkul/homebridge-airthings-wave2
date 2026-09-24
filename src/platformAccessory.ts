@@ -4,7 +4,8 @@ import packageJson from '../package.json' with { type: 'json' };
 import { AirthingsWaveSensor, WaveSensor, WaveType } from './airthingsWave.ts';
 //import { createRadonCharacteristics, createAirQualityCharacteristics } from './customCharacteristics.js';
 //import { RadonLongTermAverage, RadonShortTermAverage, VOC_Level, Pressure } from './customCharacteristics.js';
-import { createRadonLTACharacteristics, createRadonSTACharacteristics, createVOCCharacteristics, createPressureCharacteristics } from './customCharacteristics.js';
+import { createRadonLTACharacteristics, createRadonSTACharacteristics } from './customCharacteristics.js';
+import { createVOCCharacteristics, createPressureCharacteristics } from './customCharacteristics.js';
 
 //interface RadonCharacteristics {
 //  RadonShortTermAverage: Characteristic;
