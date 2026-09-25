@@ -83,8 +83,8 @@ export class AirthingsWaveSensor {
 
     // readWaveInfo() should only read the device info and not update the sensor data
     // readWaveData() should read the sensor data and update the sensor_data array
+    this.log.debug('AirthingsWaveSensor constructor called for device: ', this.macaddr);  
   
-
   }
 
   // There is just a single readWave() function that connects and reads dataand inside it
@@ -94,6 +94,7 @@ export class AirthingsWaveSensor {
   async connectWave(): Promise<boolean> {
     const { bluetooth, destroy } = createBluetooth();
     this.bluetooth = bluetooth;
+    this.log.debug('Inside connectWave() for device: ', this.macaddr );
     try {
       this.adapter = await this.bluetooth.defaultAdapter();
       // Start discovery of bluetooth devices
@@ -134,6 +135,7 @@ export class AirthingsWaveSensor {
     //this.bluetooth = bluetooth;
     //let device: Device | undefined = undefined;
     // Use a try-catch block to handle errors during the BLE operations
+    this.log.debug('Inside readWaveInfo() for device: ', this.macaddr );
     this.log.debug('Reading device info from device at address: ', this.macaddr);
     try {
       //const adapter = await bluetooth.defaultAdapter();
@@ -195,7 +197,7 @@ export class AirthingsWaveSensor {
     //const { bluetooth, destroy } = createBluetooth();
     const { destroy } = createBluetooth();
     //let device: Device | undefined = undefined;
-
+    this.log.debug('Inside readWaveData() for device: ', this.macaddr );
     // Let's make sure we found a wave device before we try to read data from it
     if (this.wave_type === WaveType.none) {
       this.log.error('ERROR: Cannot read data from device: ', this.macaddr, ' because it is not a Wave or Wave+ device.');
@@ -353,6 +355,7 @@ export class AirthingsWaveSensor {
 
   async disconnectWave() {
     const { destroy } = createBluetooth();
+    this.log.debug('Inside disconnectWave() for device: ', this.macaddr );
     if (this.device && await this.device.isConnected()) {
       await this.device.disconnect();
     }

@@ -64,7 +64,7 @@ export class AirthingsWaveAccessory {
     //this.pressureCharacteristic = airQualityCharacteristics.Pressure;
     this.isWavePlus = false; // We will determine this later when we read the device info
     //this.airthingswave = null;
-
+    this.platform.log.debug('AirthingsWaveAccessory constructor called for device: ', this.name, ' at address: ', this.address);
     //this.airthingswave = new AirthingsWaveSensor(this.platform, this.address);
     //if (this.airthingswave.connectWave()) {
     //  this.airthingswave.readWaveInfo();
@@ -141,7 +141,7 @@ export class AirthingsWaveAccessory {
   }
 
   public async init( accessory: PlatformAccessory ): Promise<void> {
-    
+    this.platform.log.debug('AirthingsWaveAccessory init() called for device: ', this.name, ' at address: ', this.address);
     this.airthingswave = new AirthingsWaveSensor(this.platform, this.address);
     if (await this.airthingswave.connectWave()) {
       await this.airthingswave.readWaveInfo();
