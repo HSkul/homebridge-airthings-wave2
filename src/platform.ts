@@ -1,9 +1,6 @@
 import type { API, Characteristic, DynamicPlatformPlugin, Logging, PlatformAccessory, PlatformConfig, Service } from 'homebridge';
 import { AirthingsWaveAccessory } from './platformAccessory.js';
 import { PLATFORM_NAME, PLUGIN_NAME } from './settings.js';
-//import { CustomCharacteristic } from './customCharacteristics.js';
-
-
 
 export class AirthingsWavePlatform implements DynamicPlatformPlugin {
   public readonly Service: typeof Service;
@@ -12,9 +9,6 @@ export class AirthingsWavePlatform implements DynamicPlatformPlugin {
   // this is used to track restored cached accessories
   public readonly accessories: Map<string, PlatformAccessory> = new Map();
   public readonly discoveredCacheUUIDs: string[] = [];
-  //public customCharacteristic: CustomCharacteristic;
-  // XXeslint-XXdisable-next-line @typescript-eslint/no-explicit-any
-  //public readonly CustomCharacteristics: any;
 
   constructor(
     public readonly log: Logging,
@@ -23,9 +17,6 @@ export class AirthingsWavePlatform implements DynamicPlatformPlugin {
   ) {
     this.Service = api.hap.Service;
     this.Characteristic = api.hap.Characteristic;
-    //this.customCharacteristic = new CustomCharacteristic(api);
-
-    this.log.info('Finished initializing platform:', this.config.name);
 
     // When this event is fired it means Homebridge has restored all cached accessories from disk.
     // Dynamic Platform plugins should only register new accessories after this event was fired,
@@ -36,6 +27,7 @@ export class AirthingsWavePlatform implements DynamicPlatformPlugin {
       // run the method to discover / register your devices as accessories
       this.discoverDevices();
     });
+    this.log.info('Finished initializing platform:', this.config.name);
   }
 
   // This function is called when the platform is initialized, and it is used to restore cached 
@@ -45,27 +37,18 @@ export class AirthingsWavePlatform implements DynamicPlatformPlugin {
 
     // add the restored accessory to the accessories cache, so we can track if it has already been registered
     this.accessories.set(accessory.UUID, accessory);
-
-    // Is this how we update the values from the device by running the constructor?
-    //new AirthingsWaveAccessory(this, accessory);
   }
 
-  /**
-   * This is an example method showing how to register discovered accessories.
-   * Accessories must only be registered once, previously created accessories
-   * must not be registered again to prevent "duplicate UUID" errors.
-   */
-  // We shouldn't really need this
+  // Setup Wave devices based on the config.json file
   
   async discoverDevices() {
     this.log.debug('Discovering devices...');
-    // Loop over the discovered devices and register each one if it has not already been registered
-    // We need to loop through the devices listed in the config.json
+    // Loop through the devices listed in the config.json and check to see if they have
+    // already been registered as accessories.  If they have, we will restore them from the cache, if not we will create a new accessory and register it with Homebridge.
     const devices = this.config.devices || [];
     for (const device of devices) {
       // generate a unique id for the accessory this should be generated from
-      // something globally unique, but constant, for example, the device serial
-      // number or MAC address
+      // something globally unique, but constant: using the MAC address
       const uuid = this.api.hap.uuid.generate(device.address);
       // see if an accessory with the same uuid has already been registered and restored from
       // the cached devices we stored in the `configureAccessory` method above
@@ -82,6 +65,7 @@ export class AirthingsWavePlatform implements DynamicPlatformPlugin {
         // create the accessory handler for the restored accessory
         // this is imported from `platformAccessory.ts`
         const awa = new AirthingsWaveAccessory(this, existingAccessory);
+        // Let's get the accessory initialized, which will read the values from the device and update the characteristics
         await awa.init(existingAccessory);
         // it is possible to remove platform accessories at any time using `api.unregisterPlatformAccessories`, e.g.:
         // remove platform accessories when no longer present
