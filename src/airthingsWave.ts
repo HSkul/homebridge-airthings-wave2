@@ -25,8 +25,8 @@ export enum WaveType {
 export class AirthingsWaveSensor {
   public log: Logging;
   private macaddr: string;                // MAC address of the Wave
-  private deviceName: string | undefined;// Name of the device
-  public wave_type: number;              // Version of the Wave
+  private deviceName: string | undefined; // Name of the Wave device from the device itself
+  public wave_type: number;               // Version of the Wave
   private sensor_data: number[];          // Array to hold the sensor data 
   private sensor_units: string[];         // Array to hold the sensor units
   private sensor_uuid: string[];          // Array to hold the sensor UUIDs (only for Wave, since Wave+ has a single UUID for all characteristics)
@@ -197,6 +197,7 @@ export class AirthingsWaveSensor {
             
       // Now the code depends on the type of wave, since Wave+ reads all values in one read, 
       // while Wave reads each characteristic separately.  So we will have to check the type of wave and read accordingly
+
       // Eventually this might be rewritten as switch statement if more types of Wave devices are added, but for now we will just use an if statement
       if (this.wave_type === WaveType.wavePlus) {
         // Read from a Wave+
@@ -271,7 +272,6 @@ export class AirthingsWaveSensor {
 
       }
       // Log the values read from the device
-      this.log.info('Values from device: ', this.deviceName);
       this.log.info('Humidity: ', this.sensor_data[WaveSensor.humidity], this.sensor_units[WaveSensor.humidity]);
       this.log.info('Temperature: ', this.sensor_data[WaveSensor.temperature], this.sensor_units[WaveSensor.temperature]);
       this.log.info('Radon short term average: ', this.sensor_data[WaveSensor.radonShortTermAverage], this.sensor_units[WaveSensor.radonShortTermAverage]);

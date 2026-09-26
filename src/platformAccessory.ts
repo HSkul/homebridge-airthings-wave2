@@ -122,6 +122,7 @@ export class AirthingsWaveAccessory {
     this.platform.log.debug('Wave+ device: ', this.isWavePlus);
     this.platform.log.debug('Refresh interval: ', this.refresh, ' seconds');
 
+    this.platform.log.info('Values from device: ', this.name);
     await this.airthingswave.connectWave();
     await this.airthingswave.readWaveData();
     await this.airthingswave.disconnectWave();
