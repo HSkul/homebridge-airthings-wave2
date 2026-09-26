@@ -44,7 +44,8 @@ export class AirthingsWavePlatform implements DynamicPlatformPlugin {
   async discoverDevices() {
     this.log.debug('Discovering devices...');
     // Loop through the devices listed in the config.json and check to see if they have
-    // already been registered as accessories.  If they have, we will restore them from the cache, if not we will create a new accessory and register it with Homebridge.
+    // already been registered as accessories.  If they have, we will restore them from the cache
+    // if not we will create a new accessory and register it with Homebridge.
     const devices = this.config.devices || [];
     for (const device of devices) {
       // generate a unique id for the accessory this should be generated from
