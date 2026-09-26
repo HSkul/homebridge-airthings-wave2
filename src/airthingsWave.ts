@@ -102,7 +102,7 @@ export class AirthingsWaveSensor {
       this.device = await this.adapter.waitDevice(this.macaddr);  
       // Wait for the device to be connected
       await this.device?.connect();
-      this.log.debug('Connected to device', this.device.getName());
+      this.log.debug('Connected to device', this.device?.getName());
       return true;
     } catch (error: unknown) {
       // Generic BLE error
