@@ -225,14 +225,14 @@ export class AirthingsWaveAccessory {
     await this.airthingswave.readWaveData();
     await this.airthingswave.disconnectWave();
 
-    this.platform.log
-      .info('Humidity: ', this.airthingswave.getvalue(WaveSensor.humidity), this.airthingswave.getunit(WaveSensor.humidity));
-    this.platform.log
-      .info('Temperature: ', this.airthingswave.getvalue(WaveSensor.temperature), this.airthingswave.getunit(WaveSensor.temperature));
-    this.platform.log
-      .info('Radon short term: ', this.airthingswave.getvalue(WaveSensor.radonShortTermAverage), this.airthingswave.getunit(WaveSensor.radonShortTermAverage));
-    this.platform.log
-      .info('Radon long term: ', this.airthingswave.getvalue(WaveSensor.radonLongTermAverage), this.airthingswave.getunit(WaveSensor.radonLongTermAverage));
+    //this.platform.log
+    //  .info('Humidity: ', this.airthingswave.getvalue(WaveSensor.humidity), this.airthingswave.getunit(WaveSensor.humidity));
+    //this.platform.log
+    //  .info('Temperature: ', this.airthingswave.getvalue(WaveSensor.temperature), this.airthingswave.getunit(WaveSensor.temperature));
+    //this.platform.log
+    //  .info('Radon short term: ', this.airthingswave.getvalue(WaveSensor.radonShortTermAverage), this.airthingswave.getunit(WaveSensor.radonShortTermAverage));
+    //this.platform.log
+    //  .info('Radon long term: ', this.airthingswave.getvalue(WaveSensor.radonLongTermAverage), this.airthingswave.getunit(WaveSensor.radonLongTermAverage));
 
     this.humidityService
       .setCharacteristic(this.platform.Characteristic.CurrentRelativeHumidity, this.airthingswave.getvalue(WaveSensor.humidity));
@@ -244,9 +244,9 @@ export class AirthingsWaveAccessory {
       .setCharacteristic(this.radonLongTermAverageCharacteristic.name, this.airthingswave.getvalue(WaveSensor.radonLongTermAverage));
 
     if (this.isWavePlus) {
-      this.platform.log.info('Pressure: ', this.airthingswave.getvalue(WaveSensor.pressure), this.airthingswave.getunit(WaveSensor.pressure));
-      this.platform.log.info('Carbon dioxide: ', this.airthingswave.getvalue(WaveSensor.co2Level), this.airthingswave.getunit(WaveSensor.co2Level));
-      this.platform.log.info('Organics: ', this.airthingswave.getvalue(WaveSensor.vocLevel), this.airthingswave.getunit(WaveSensor.vocLevel));
+      //this.platform.log.info('Pressure: ', this.airthingswave.getvalue(WaveSensor.pressure), this.airthingswave.getunit(WaveSensor.pressure));
+      //this.platform.log.info('Carbon dioxide: ', this.airthingswave.getvalue(WaveSensor.co2Level), this.airthingswave.getunit(WaveSensor.co2Level));
+      //this.platform.log.info('Organics: ', this.airthingswave.getvalue(WaveSensor.vocLevel), this.airthingswave.getunit(WaveSensor.vocLevel));
 
       this.carbonDioxideService?.setCharacteristic(
         this.platform.Characteristic.CarbonDioxideLevel, this.airthingswave.getvalue(WaveSensor.co2Level));

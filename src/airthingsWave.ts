@@ -87,10 +87,8 @@ export class AirthingsWaveSensor {
   
   }
 
-  // There is just a single readWave() function that connects and reads dataand inside it
-  // we will check if it is a wave or wave+ and then read the appropriate characteristics
-
   
+  // Establish a connection to the Wave device and return true if successful, false otherwise
   async connectWave(): Promise<boolean> {
     const { bluetooth, destroy } = createBluetooth();
     this.bluetooth = bluetooth;
@@ -104,7 +102,7 @@ export class AirthingsWaveSensor {
       this.device = await this.adapter.waitDevice(this.macaddr);  
       // Wait for the device to be connected
       await this.device?.connect();
-      this.log.debug('Connected to device');
+      this.log.debug('Connected to device', this.device.getName());
       return true;
     } catch (error: unknown) {
       // Generic BLE error
@@ -128,7 +126,7 @@ export class AirthingsWaveSensor {
       return false;
     }
   }
-
+  // Get the device information and determine the type of Wave device (Wave or Wave+ for now)
   async readWaveInfo() {
     //const { bluetooth, destroy } = createBluetooth();
     const { destroy } = createBluetooth();
@@ -152,6 +150,9 @@ export class AirthingsWaveSensor {
       // Let's ensure we have the right device
       this.deviceName = await this.device?.getAlias();
       const btaddress = await this.device?.getAddress();
+      this.log.debug('Alias: ',this.device?.getAlias());
+      this.log.debug('Name: ',this.device?.getName());
+
       // In the future, other wave devices may be added here
       switch (this.deviceName) {
       case 'Airthings Wave+':
@@ -192,7 +193,7 @@ export class AirthingsWaveSensor {
       this.log.debug('Finished reading device info from device at address: ', this.macaddr);
     } 
   }
-  // This should only read the sensor data and update the sensor_data array, but not read the device info
+  // Read the sensor data from the Wave device and update the sensor_data array
   async readWaveData() {
     //const { bluetooth, destroy } = createBluetooth();
     const { destroy } = createBluetooth();
@@ -273,7 +274,7 @@ export class AirthingsWaveSensor {
           rawdata.readUInt16LE(16),
           rawdata.readUInt16LE(18),
         ];
-        
+        // The first byte of the data should be 1 for Wave+, if not, we have a problem
         if (this.wave_type === rawValues[0]) {
           this.sensor_data[WaveSensor.humidity] = rawValues[1] / 2.0;
           this.sensor_data[WaveSensor.temperature] = rawValues[6] / 100.0;
@@ -352,7 +353,7 @@ export class AirthingsWaveSensor {
       await this.sleep(10000);
     }
   }
-
+  // Disconnect from the Wave device and free up the DBus network connection
   async disconnectWave() {
     const { destroy } = createBluetooth();
     this.log.debug('Inside disconnectWave() for device: ', this.macaddr );
