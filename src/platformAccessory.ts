@@ -122,10 +122,12 @@ export class AirthingsWaveAccessory {
     this.platform.log.debug('Wave+ device: ', this.isWavePlus);
     this.platform.log.debug('Refresh interval: ', this.refresh, ' seconds');
 
-    this.platform.log.info('Values from device: ', this.name);
-    await this.airthingswave.connectWave();
-    await this.airthingswave.readWaveData();
-    await this.airthingswave.disconnectWave();
+    this.platform.log.info('Reading values from device: ', this.name);
+    if (await this.airthingswave.connectWave()) {
+      await this.airthingswave.readWaveData();
+      await this.airthingswave.disconnectWave();
+    }
+    
 
     /*this.platform.log
       .info('Humidity: ', this.airthingswave.getvalue(WaveSensor.humidity), this.airthingswave.getunit(WaveSensor.humidity));
