@@ -11,7 +11,8 @@
 [Homebridge](https://github.com/nfarina/homebridge) plugin for both Wave (first generation) and Wave Plus 
 radon sensors from [Airthings](https://www.airthings.com/).  Requires bluetooth capable computer running
 Linux (macOS and Windows not supported per node-ble limitations) that communicates directly with the the
-Wave/Wave Plus (automatic detection of Wave type) without the need of a hub.  Reads the following values:
+Wave/Wave Plus (automatic detection of Wave type) without the need of a hub.  Compatible with Homebridge v2.
+Reads the following values:
 * Temperature
 * Humidity
 * Radon short-term average
