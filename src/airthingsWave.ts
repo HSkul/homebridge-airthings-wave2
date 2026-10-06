@@ -124,9 +124,9 @@ export class AirthingsWaveSensor {
     this.log.debug('Reading device info from device at address: ', this.macaddr);
     try {
       // Let's ensure we have the right device
-      const dName = await this.device?.getName();
+      //const dName = await this.device?.getName();
       const dAlias = await this.device?.getAlias();
-      this.log.debug('Device name: ', dName);
+      //this.log.debug('Device name: ', dName);
       this.log.debug('Device alias: ', dAlias);
       // Alias and name should be the same, but we will use the alias for now
       this.deviceName = dAlias;
